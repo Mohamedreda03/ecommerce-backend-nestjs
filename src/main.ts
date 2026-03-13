@@ -1,7 +1,10 @@
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
+import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import * as fs from 'fs';
+import * as path from 'path';
 import compression from 'compression';
 import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
@@ -12,7 +15,7 @@ import { TimeoutInterceptor } from './common/interceptors/timeout.interceptor';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
   const config = app.get(ConfigService);
 
   // 1. Security headers
@@ -66,13 +69,17 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup('api/docs', app, document);
 
-  // 12. Graceful shutdown
+  // 12. Static file serving for uploads
+  const uploadDir = path.resolve(config.get<string>('UPLOAD_DIR', './uploads'));
+  fs.mkdirSync(uploadDir, { recursive: true });
+  app.useStaticAssets(uploadDir, { prefix: '/uploads' });
+
+  // 13. Graceful shutdown
   app.enableShutdownHooks();
 
-  // 13. Start server
+  // 14. Start server
   const port = config.get<number>('PORT', 3000);
   await app.listen(port);
 }
 
 bootstrap();
-

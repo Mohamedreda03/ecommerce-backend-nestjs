@@ -7,6 +7,7 @@ import {
   Logger,
 } from '@nestjs/common';
 import { ThrottlerException } from '@nestjs/throttler';
+import multer from 'multer';
 import {
   PrismaClientKnownRequestError,
   PrismaClientValidationError,
@@ -48,6 +49,22 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     message: string;
     error: string;
   } {
+    // Multer errors (file size exceeded, unexpected fields, etc.)
+    if (exception instanceof multer.MulterError) {
+      if (exception.code === 'LIMIT_FILE_SIZE') {
+        return {
+          statusCode: HttpStatus.PAYLOAD_TOO_LARGE,
+          message: 'File too large.',
+          error: 'Payload Too Large',
+        };
+      }
+      return {
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: exception.message,
+        error: 'Bad Request',
+      };
+    }
+
     // ThrottlerException — must be checked before HttpException (it extends it)
     if (exception instanceof ThrottlerException) {
       return {
