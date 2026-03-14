@@ -11,6 +11,8 @@ import { ProductsController } from './products.controller';
 import { ProductsService } from './products.service';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { PermissionsGuard } from '../common/guards/permissions.guard';
+import { RedisService } from '../redis/redis.service';
+import { Reflector } from '@nestjs/core';
 
 // ─── Fixtures ─────────────────────────────────────────────────────────────────
 
@@ -82,7 +84,11 @@ const mockProductsService = {
 function buildApp(): Promise<INestApplication> {
   return Test.createTestingModule({
     controllers: [ProductsController],
-    providers: [{ provide: ProductsService, useValue: mockProductsService }],
+    providers: [
+      { provide: ProductsService, useValue: mockProductsService },
+      { provide: RedisService, useValue: { get: jest.fn(), setEx: jest.fn(), deleteByPattern: jest.fn() } },
+      Reflector,
+    ],
   })
     .overrideGuard(JwtAuthGuard)
     .useValue({

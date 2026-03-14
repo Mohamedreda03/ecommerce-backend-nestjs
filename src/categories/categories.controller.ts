@@ -10,6 +10,7 @@ import {
   Patch,
   Post,
   Query,
+  UseInterceptors,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -18,6 +19,8 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { CategoriesService } from './categories.service';
+import { CacheInterceptor } from '../common/interceptors/cache.interceptor';
+import { CacheTTL } from '../common/decorators/cache-ttl.decorator';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { Permissions } from '../common/decorators/permissions.decorator';
@@ -30,6 +33,8 @@ export class CategoriesController {
 
   @Public()
   @Get()
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(300)
   @ApiOperation({ summary: 'List active categories (storefront)' })
   findAll() {
     return this.categoriesService.findAll(false);
@@ -37,6 +42,8 @@ export class CategoriesController {
 
   @Public()
   @Get('tree')
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(300)
   @ApiOperation({ summary: 'Get category tree (storefront)' })
   findTree() {
     return this.categoriesService.findTree();

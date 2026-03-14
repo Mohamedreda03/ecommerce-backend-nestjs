@@ -5,6 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { RedisService } from '../redis/redis.service';
 import { generateSlug } from '../common/utils/slug.util';
 import { PaginatedResponseDto } from '../common/dto/paginated-response.dto';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -40,7 +41,10 @@ const PRODUCT_FULL_SELECT = {
 
 @Injectable()
 export class ProductsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly redisService: RedisService,
+  ) {}
 
   async findAll(query: ProductQueryDto, adminMode = false) {
     const {
@@ -230,11 +234,14 @@ export class ProductsService {
           ? { stock: { increment: quantity } }
           : { stock: { decrement: quantity } };
 
-    return this.prisma.product.update({
+    const result = await this.prisma.product.update({
       where: { id },
       data: stockData,
       select: { id: true, stock: true, lowStockThreshold: true },
     });
+
+    await this.redisService.deleteByPattern('cache:/products*');
+    return result;
   }
 
   async softDelete(id: string) {
@@ -279,10 +286,13 @@ export class ProductsService {
       data: images.map((img) => ({ ...img, productId })),
     });
 
-    return this.prisma.product.findUnique({
+    const result = await this.prisma.product.findUnique({
       where: { id: productId },
       select: PRODUCT_FULL_SELECT,
     });
+
+    await this.redisService.deleteByPattern('cache:/products*');
+    return result;
   }
 
   async removeImage(imageId: string) {
@@ -293,6 +303,7 @@ export class ProductsService {
       throw new NotFoundException(`Image "${imageId}" not found`);
     }
     await this.prisma.productImage.delete({ where: { id: imageId } });
+    await this.redisService.deleteByPattern('cache:/products*');
   }
 
   async reorderImages(productId: string, imageIds: string[]) {
@@ -311,5 +322,7 @@ export class ProductsService {
         }),
       ),
     );
+
+    await this.redisService.deleteByPattern('cache:/products*');
   }
 }

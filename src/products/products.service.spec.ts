@@ -6,6 +6,7 @@ import {
 import { Test, TestingModule } from '@nestjs/testing';
 import { ProductsService } from './products.service';
 import { PrismaService } from '../prisma/prisma.service';
+import { RedisService } from '../redis/redis.service';
 import * as slugUtil from '../common/utils/slug.util';
 import { PaginatedResponseDto } from '../common/dto/paginated-response.dto';
 
@@ -35,11 +36,18 @@ const mockPrisma = {
   $transaction: jest.fn(),
 };
 
+const mockRedisService = {
+  get: jest.fn(),
+  setEx: jest.fn(),
+  deleteByPattern: jest.fn(),
+};
+
 function buildModule(): Promise<TestingModule> {
   return Test.createTestingModule({
     providers: [
       ProductsService,
       { provide: PrismaService, useValue: mockPrisma },
+      { provide: RedisService, useValue: mockRedisService },
     ],
   }).compile();
 }

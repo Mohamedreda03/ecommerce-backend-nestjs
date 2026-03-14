@@ -10,8 +10,11 @@ import {
   Patch,
   Post,
   Query,
+  UseInterceptors,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
+import { CacheInterceptor } from '../common/interceptors/cache.interceptor';
+import { CacheTTL } from '../common/decorators/cache-ttl.decorator';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductQueryDto } from './dto/product-query.dto';
@@ -27,6 +30,8 @@ export class ProductsController {
 
   @Get()
   @Public()
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(60)
   findAll(@Query() query: ProductQueryDto) {
     return this.productsService.findAll(query, false);
   }
@@ -45,6 +50,8 @@ export class ProductsController {
 
   @Get(':slug')
   @Public()
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(60)
   findBySlug(@Param('slug') slug: string) {
     return this.productsService.findBySlug(slug);
   }

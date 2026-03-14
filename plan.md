@@ -906,18 +906,18 @@ src/
 
 ### Step 16.1: Mail module with Bull queue
 
-- [ ] **Task:** Create `src/mail/mail.module.ts`, `mail.service.ts`, `mail.processor.ts`.
-- [ ] **Task:** Configure `@nestjs/bull` with Redis connection. Create queue: `email`.
-- [ ] **Task:** Implement `MailService`:
+- [x] **Task:** Create `src/mail/mail.module.ts`, `mail.service.ts`, `mail.processor.ts`.
+- [x] **Task:** Configure `@nestjs/bull` with Redis connection. Create queue: `email`.
+- [x] **Task:** Implement `MailService`:
   - `sendOrderConfirmation(order, userEmail)` — Adds job to queue.
   - `sendOrderShipped(order, userEmail, trackingInfo?)` — Adds job to queue.
   - `sendOrderDelivered(order, userEmail)` — Adds job to queue.
   - `sendPasswordReset(email, resetUrl)` — Adds job to queue.
   - `sendWelcome(email, firstName)` — Adds job to queue.
     > **Note:** NEVER send emails synchronously inside request handlers. Always queue them. If email sending fails, it retries (Bull retries 3 times by default). This prevents email provider downtime from breaking the user experience.
-- [ ] **Task:** Implement `MailProcessor` (`@Processor('email')`) — Processes jobs from the queue. Uses Nodemailer to send. Separate handlers for each email type via `@Process('order-confirmation')`, etc.
-- [ ] **Task:** Create email templates as simple HTML strings (template literals) — no external templating engine needed. Include: order details, items list, totals, address.
-- [ ] **Test:** Unit test that the correct job is added to the queue for each method. Mock Bull queue.
+- [x] **Task:** Implement `MailProcessor` (`@Processor('email')`) — Processes jobs from the queue. Uses Nodemailer to send. Separate handlers for each email type via `@Process('order-confirmation')`, etc.
+- [x] **Task:** Create email templates as simple HTML strings (template literals) — no external templating engine needed. Include: order details, items list, totals, address.
+- [x] **Test:** Unit test that the correct job is added to the queue for each method. Mock Bull queue.
 
 ---
 
@@ -925,19 +925,19 @@ src/
 
 ### Step 17.1: Cache interceptor
 
-- [ ] **Task:** Create `src/common/interceptors/cache.interceptor.ts` — Custom cache interceptor that:
+- [x] **Task:** Create `src/common/interceptors/cache.interceptor.ts` — Custom cache interceptor that:
   1. Generates cache key from URL + query params.
   2. Checks Redis for cached response. If found, return immediately.
   3. If not found, proceed to handler, cache the response with a configurable TTL.
   4. Cache is only applied to GET requests on `@Public()` endpoints.
-- [ ] **Task:** Create `src/common/decorators/cache-ttl.decorator.ts` — `@CacheTTL(seconds)` decorator.
-- [ ] **Task:** Apply caching to:
+- [x] **Task:** Create `src/common/decorators/cache-ttl.decorator.ts` — `@CacheTTL(seconds)` decorator.
+- [x] **Task:** Apply caching to:
   - `GET /products` — TTL: 60s
   - `GET /products/:slug` — TTL: 60s
   - `GET /categories` — TTL: 300s (categories change rarely)
   - `GET /categories/tree` — TTL: 300s
     > **Note:** Cache invalidation: When a product/category is created, updated, or deleted, bust the relevant cache keys via `RedisService.del()`. Implement this in the service methods. Use key patterns like `cache:products:*` and Redis `SCAN` + `DEL` for pattern-based invalidation.
-- [ ] **Test:** Unit test cache hit/miss logic.
+- [x] **Test:** Unit test cache hit/miss logic.
 
 ---
 

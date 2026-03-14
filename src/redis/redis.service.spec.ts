@@ -1,20 +1,23 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { REDIS_CLIENT } from './redis.constants';
 import { RedisService } from './redis.service';
-
-const mockRedisClient = {
-  get: jest.fn(),
-  set: jest.fn(),
-  del: jest.fn(),
-  exists: jest.fn(),
-  quit: jest.fn(),
-};
+import { EventEmitter } from 'events';
+import Redis from 'ioredis';
 
 describe('RedisService', () => {
   let service: RedisService;
+  let mockRedisClient: jest.Mocked<Partial<Redis>>;
 
   beforeEach(async () => {
-    jest.clearAllMocks();
+    mockRedisClient = {
+      get: jest.fn(),
+      set: jest.fn(),
+      del: jest.fn(),
+      exists: jest.fn(),
+      quit: jest.fn(),
+      scanStream: jest.fn(),
+      pipeline: jest.fn(),
+    } as any;
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -97,6 +100,76 @@ describe('RedisService', () => {
       mockRedisClient.set.mockResolvedValueOnce(null);
       const acquired = await service.setNX('lock:order:123', '1', 30);
       expect(acquired).toBe(false);
+    });
+  });
+
+  describe('setEx', () => {
+    it('should call set with EX TTL', async () => {
+      mockRedisClient.set.mockResolvedValueOnce('OK');
+      await service.setEx('key', 'value', 120);
+      expect(mockRedisClient.set).toHaveBeenCalledWith('key', 'value', 'EX', 120);
+    });
+  });
+
+  describe('deleteByPattern', () => {
+    it('should delete matched keys using pipeline', async () => {
+      const mockStream = new EventEmitter();
+      mockRedisClient.scanStream.mockReturnValue(mockStream as any);
+
+      const mockPipelineExec = jest.fn().mockResolvedValue([]);
+      const mockPipelineDel = jest.fn();
+      mockRedisClient.pipeline.mockReturnValue({
+        del: mockPipelineDel,
+        exec: mockPipelineExec,
+      } as any);
+
+      const deletePromise = service.deleteByPattern('cache:/products*');
+
+      mockStream.emit('data', ['key1', 'key2']);
+      mockStream.emit('data', ['key3']);
+      mockStream.emit('end');
+
+      await deletePromise;
+
+      expect(mockRedisClient.scanStream).toHaveBeenCalledWith({
+        match: 'cache:/products*',
+        count: 100,
+      });
+      expect(mockPipelineDel).toHaveBeenCalledTimes(3);
+      expect(mockPipelineDel).toHaveBeenCalledWith('key1');
+      expect(mockPipelineDel).toHaveBeenCalledWith('key2');
+      expect(mockPipelineDel).toHaveBeenCalledWith('key3');
+      expect(mockPipelineExec).toHaveBeenCalled();
+    });
+
+    it('should resolve immediately if no keys matched', async () => {
+      const mockStream = new EventEmitter();
+      mockRedisClient.scanStream.mockReturnValue(mockStream as any);
+
+      const mockPipelineExec = jest.fn();
+      mockRedisClient.pipeline.mockReturnValue({
+        exec: mockPipelineExec,
+      } as any);
+
+      const deletePromise = service.deleteByPattern('test*');
+      mockStream.emit('end');
+
+      await deletePromise;
+
+      expect(mockPipelineExec).not.toHaveBeenCalled();
+    });
+
+    it('should reject if stream errors out', async () => {
+      const mockStream = new EventEmitter();
+      mockRedisClient.scanStream.mockReturnValue(mockStream as any);
+      mockRedisClient.pipeline.mockReturnValue({} as any);
+
+      const deletePromise = service.deleteByPattern('test*');
+      const err = new Error('Stream failed');
+      
+      mockStream.emit('error', err);
+
+      await expect(deletePromise).rejects.toThrow('Stream failed');
     });
   });
 
