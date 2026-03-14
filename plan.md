@@ -819,7 +819,6 @@ src/
   - Test address snapshot immutability.
 - [x] **Test:** Integration test — full checkout flow end-to-end.
 
-
 ---
 
 ## Phase 13 — Payment Integration (Stripe)
@@ -847,19 +846,18 @@ src/
     > **Note:** This is the only payment endpoint. PaymentIntent creation happens inside the checkout flow. Do NOT create an endpoint that lets clients create arbitrary payment intents.
 - [x] **Test:** Unit tests for webhook event handling (mock Stripe SDK). Test each event type updates correct statuses.
 
-
 ---
 
 ## Phase 14 — Reviews & Ratings
 
 ### Step 14.1: Reviews module
 
-- [ ] **Task:** Create `src/reviews/reviews.module.ts`, `reviews.controller.ts`, `reviews.service.ts`.
-- [ ] **Task:** Create DTOs: `create-review.dto.ts` (rating: 1-5, title?, comment?), `update-review.dto.ts`, `review-query.dto.ts`.
+- [x] **Task:** Create `src/reviews/reviews.module.ts`, `reviews.controller.ts`, `reviews.service.ts`.
+- [x] **Task:** Create DTOs: `create-review.dto.ts` (rating: 1-5, title?, comment?), `update-review.dto.ts`, `review-query.dto.ts`.
 
 ### Step 14.2: Reviews service & controller
 
-- [ ] **Task:** Implement `ReviewsService`:
+- [x] **Task:** Implement `ReviewsService`:
   - `create(userId, productId, dto)` — Validate user has purchased and received this product (has a DELIVERED order containing it). One review per user per product (unique constraint handles race condition via global filter → 409).
   - `findByProduct(productId, query)` — Paginated, only approved reviews for public. Include user firstName.
   - `findByUser(userId, query)` — User's own reviews.
@@ -869,14 +867,14 @@ src/
   - `reject(reviewId)` — Admin: delete review (or set a rejected flag).
   - `getProductRatingStats(productId)` — Average rating, count, distribution (1★: N, 2★: N, etc.) using Prisma aggregation.
 
-- [ ] **Task:** Implement controller:
+- [x] **Task:** Implement controller:
   - `GET /products/:productId/reviews` — `@Public()` → product reviews (approved only)
   - `POST /products/:productId/reviews` — Authenticated → create review
   - `PATCH /reviews/:id` — Authenticated → update own review
   - `DELETE /reviews/:id` — Authenticated → delete own or admin
   - `PATCH /reviews/:id/approve` — `@Permissions('update:review')` → approve
   - `GET /reviews/pending` — `@Permissions('read:review')` → admin: pending reviews
-- [ ] **Test:** Unit tests for purchase validation, rating stats, moderation flow.
+- [x] **Test:** Unit tests for purchase validation, rating stats, moderation flow.
 
 ---
 
