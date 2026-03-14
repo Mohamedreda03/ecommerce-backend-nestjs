@@ -5,6 +5,8 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { RedisService } from '../redis/redis.service';
+import { CACHE_INVALIDATION_PATTERNS } from '../redis/redis.constants';
 import { generateSlug } from '../common/utils/slug.util';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
@@ -41,7 +43,10 @@ export interface CategoryNode {
 
 @Injectable()
 export class CategoriesService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly redisService: RedisService,
+  ) {}
 
   async findAll(includeInactive = false) {
     return this.prisma.category.findMany({
@@ -117,7 +122,7 @@ export class CategoriesService {
         .then(Boolean),
     );
 
-    return this.prisma.category.create({
+    const result = await this.prisma.category.create({
       data: {
         name: dto.name,
         slug,
@@ -129,6 +134,11 @@ export class CategoriesService {
       },
       select: CATEGORY_SELECT,
     });
+
+    await this.redisService.deleteByPattern(
+      CACHE_INVALIDATION_PATTERNS.CATEGORIES,
+    );
+    return result;
   }
 
   async update(id: string, dto: UpdateCategoryDto) {
@@ -161,7 +171,7 @@ export class CategoriesService {
       );
     }
 
-    return this.prisma.category.update({
+    const result = await this.prisma.category.update({
       where: { id },
       data: {
         ...(dto.name && { name: dto.name, slug }),
@@ -173,6 +183,11 @@ export class CategoriesService {
       },
       select: CATEGORY_SELECT,
     });
+
+    await this.redisService.deleteByPattern(
+      CACHE_INVALIDATION_PATTERNS.CATEGORIES,
+    );
+    return result;
   }
 
   async delete(id: string, force = false) {
@@ -203,6 +218,9 @@ export class CategoriesService {
     });
 
     await this.prisma.category.delete({ where: { id } });
+    await this.redisService.deleteByPattern(
+      CACHE_INVALIDATION_PATTERNS.CATEGORIES,
+    );
   }
 
   // ─── Private helpers ────────────────────────────────────────────────────────

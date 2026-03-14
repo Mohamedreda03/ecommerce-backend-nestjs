@@ -6,6 +6,7 @@ import {
 import { Test, TestingModule } from '@nestjs/testing';
 import { CategoriesService } from './categories.service';
 import { PrismaService } from '../prisma/prisma.service';
+import { RedisService } from '../redis/redis.service';
 import * as slugUtil from '../common/utils/slug.util';
 
 // ─── Mocks ────────────────────────────────────────────────────────────────────
@@ -22,11 +23,18 @@ const mockPrisma = {
   },
 };
 
+const mockRedisService = {
+  get: jest.fn(),
+  setEx: jest.fn(),
+  deleteByPattern: jest.fn(),
+};
+
 function buildModule(): Promise<TestingModule> {
   return Test.createTestingModule({
     providers: [
       CategoriesService,
       { provide: PrismaService, useValue: mockPrisma },
+      { provide: RedisService, useValue: mockRedisService },
     ],
   }).compile();
 }

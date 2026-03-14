@@ -12,6 +12,8 @@ import { CategoriesController } from './categories.controller';
 import { CategoriesService } from './categories.service';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { PermissionsGuard } from '../common/guards/permissions.guard';
+import { RedisService } from '../redis/redis.service';
+import { Reflector } from '@nestjs/core';
 
 // ─── Fixtures ─────────────────────────────────────────────────────────────────
 
@@ -57,6 +59,8 @@ function buildApp(): Promise<INestApplication> {
     controllers: [CategoriesController],
     providers: [
       { provide: CategoriesService, useValue: mockCategoriesService },
+      { provide: RedisService, useValue: { get: jest.fn(), setEx: jest.fn(), deleteByPattern: jest.fn() } },
+      Reflector,
     ],
   })
     .overrideGuard(JwtAuthGuard)
