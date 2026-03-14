@@ -13,6 +13,7 @@ import { ProductsModule } from './products/products.module';
 import { FilesModule } from './files/files.module';
 import { CartModule } from './cart/cart.module';
 import { AddressesModule } from './addresses/addresses.module';
+import { CouponsModule } from './coupons/coupons.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { AddressesModule } from './addresses/addresses.module';
     FilesModule,
     CartModule,
     AddressesModule,
+    CouponsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -699,12 +699,12 @@ src/
 
 ### Step 11.1: Coupons module
 
-- [ ] **Task:** Create `src/coupons/coupons.module.ts`, `coupons.controller.ts`, `coupons.service.ts`.
-- [ ] **Task:** Create DTOs: `create-coupon.dto.ts`, `update-coupon.dto.ts`, `validate-coupon.dto.ts` (code, orderSubtotal).
+- [x] **Task:** Create `src/coupons/coupons.module.ts`, `coupons.controller.ts`, `coupons.service.ts`.
+- [x] **Task:** Create DTOs: `create-coupon.dto.ts`, `update-coupon.dto.ts`, `validate-coupon.dto.ts` (code, orderSubtotal).
 
 ### Step 11.2: Coupons service & controller
 
-- [ ] **Task:** Implement `CouponsService`:
+- [x] **Task:** Implement `CouponsService`:
   - `findAll(paginationDto)` — Admin: paginated list.
   - `findById(id)` — Admin.
   - `create(dto)` — Admin: create coupon. Code auto-uppercased.
@@ -721,14 +721,14 @@ src/
   - `applyCoupon(couponId)` — Increment `currentUses`. Used during checkout.
     > **Note:** Coupon validation is read-only. `applyCoupon` is called within the checkout transaction to ensure atomicity.
 
-- [ ] **Task:** Implement controller:
+- [x] **Task:** Implement controller:
   - `GET /coupons` — `@Permissions('read:coupon')` → admin list
   - `GET /coupons/:id` — `@Permissions('read:coupon')` → admin single
   - `POST /coupons` — `@Permissions('create:coupon')` → create
   - `PATCH /coupons/:id` — `@Permissions('update:coupon')` → update
   - `DELETE /coupons/:id` — `@Permissions('delete:coupon')` → delete
   - `POST /coupons/validate` — Authenticated → validate coupon code
-- [ ] **Test:** Unit tests for coupon validation logic (expired, max uses, min order, percentage cap, etc.).
+- [x] **Test:** Unit tests for coupon validation logic (expired, max uses, min order, percentage cap, etc.).
 
 ---
 
