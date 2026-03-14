@@ -6,7 +6,15 @@ import Redis from 'ioredis';
 
 describe('RedisService', () => {
   let service: RedisService;
-  let mockRedisClient: jest.Mocked<Partial<Redis>>;
+  let mockRedisClient: {
+    get: jest.Mock;
+    set: jest.Mock;
+    del: jest.Mock;
+    exists: jest.Mock;
+    quit: jest.Mock;
+    scanStream: jest.Mock;
+    pipeline: jest.Mock;
+  };
 
   beforeEach(async () => {
     mockRedisClient = {
@@ -17,7 +25,7 @@ describe('RedisService', () => {
       quit: jest.fn(),
       scanStream: jest.fn(),
       pipeline: jest.fn(),
-    } as any;
+    };
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
