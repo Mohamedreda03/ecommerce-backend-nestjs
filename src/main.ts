@@ -15,7 +15,9 @@ import { TimeoutInterceptor } from './common/interceptors/timeout.interceptor';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+    rawBody: true,
+  });
   const config = app.get(ConfigService);
 
   // 1. Security headers

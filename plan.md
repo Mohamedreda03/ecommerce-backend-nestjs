@@ -826,12 +826,12 @@ src/
 
 ### Step 13.1: Payments module
 
-- [ ] **Task:** Create `src/payments/payments.module.ts`, `payments.controller.ts`, `payments.service.ts`.
-- [ ] **Task:** Initialize Stripe SDK with `STRIPE_SECRET_KEY` from env.
+- [x] **Task:** Create `src/payments/payments.module.ts`, `payments.controller.ts`, `payments.service.ts`.
+- [x] **Task:** Initialize Stripe SDK with `STRIPE_SECRET_KEY` from env.
 
 ### Step 13.2: Payments service
 
-- [ ] **Task:** Implement `PaymentsService`:
+- [x] **Task:** Implement `PaymentsService`:
   - `createPaymentIntent(order)` — Create Stripe PaymentIntent with `amount` (in cents), `currency`, `metadata: { orderId, orderNumber, userId }`. Return `{ paymentIntentId, clientSecret }`.
   - `handleWebhook(payload, signature)` — Verify webhook signature with `STRIPE_WEBHOOK_SECRET`. Handle events:
     - `payment_intent.succeeded` → Update Payment status to SUCCEEDED, Order status to CONFIRMED. Queue confirmation email.
@@ -842,10 +842,11 @@ src/
 
 ### Step 13.3: Payments controller
 
-- [ ] **Task:** Implement:
+- [x] **Task:** Implement:
   - `POST /payments/webhook` — `@Public()`, raw body → handle Stripe webhook
     > **Note:** This is the only payment endpoint. PaymentIntent creation happens inside the checkout flow. Do NOT create an endpoint that lets clients create arbitrary payment intents.
-- [ ] **Test:** Unit tests for webhook event handling (mock Stripe SDK). Test each event type updates correct statuses.
+- [x] **Test:** Unit tests for webhook event handling (mock Stripe SDK). Test each event type updates correct statuses.
+
 
 ---
 

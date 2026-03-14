@@ -121,7 +121,10 @@ describe('AuthService', () => {
     });
 
     it('throws ConflictException when email already exists', async () => {
-      mockPrisma.user.findUnique.mockResolvedValue({ id: 'existing-id' });
+      mockPrisma.user.create.mockRejectedValue({
+        code: 'P2002',
+        meta: { target: ['email'] },
+      });
 
       await expect(service.register(dto)).rejects.toThrow(ConflictException);
     });
@@ -166,13 +169,20 @@ describe('AuthService', () => {
         roles: ['CUSTOMER'],
         permissions: ['read:product'],
       });
+      
+      const crypto = require('crypto');
+      const hashedRefreshToken = crypto
+        .createHash('sha256')
+        .update('valid-refresh-token')
+        .digest('hex');
+
       mockPrisma.user.findUnique.mockResolvedValue({
         id: 'user-id',
         email: 'user@example.com',
         isActive: true,
-        refreshToken: 'stored-hash',
+        refreshToken: hashedRefreshToken,
       });
-      jest.spyOn(hashUtil, 'comparePassword').mockResolvedValue(true);
+      
       mockPrisma.user.update.mockResolvedValue({});
 
       const result = await service.refreshTokens('valid-refresh-token');
@@ -201,10 +211,9 @@ describe('AuthService', () => {
       mockPrisma.user.findUnique.mockResolvedValue({
         id: 'user-id',
         isActive: true,
-        refreshToken: 'hashed',
+        refreshToken: 'wrong-hash-in-db-that-will-never-match',
       });
-      jest.spyOn(hashUtil, 'comparePassword').mockResolvedValue(false);
-
+      
       await expect(service.refreshTokens('token')).rejects.toThrow(
         UnauthorizedException,
       );

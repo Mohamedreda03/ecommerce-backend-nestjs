@@ -9,6 +9,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { CartService } from '../cart/cart.service';
 import { AddressesService } from '../addresses/addresses.service';
 import { CouponsService } from '../coupons/coupons.service';
+import { PaymentsService } from '../payments/payments.service';
 import { OrderStatus } from '../common/enums/order-status.enum';
 import { PaginatedResponseDto } from '../common/dto/paginated-response.dto';
 import { CreateOrderDto } from './dto/create-order.dto';
@@ -68,12 +69,13 @@ export class OrdersService {
     private readonly cartService: CartService,
     private readonly addressesService: AddressesService,
     private readonly couponsService: CouponsService,
+    private readonly paymentsService: PaymentsService,
   ) {}
 
   // ─── Checkout ──────────────────────────────────────────────────────────────────
 
   async checkout(userId: string, dto: CreateOrderDto) {
-    return this.prisma.$transaction(
+    const result = await this.prisma.$transaction(
       async (tx) => {
         // 1. Validate cart
         const cart = await tx.cart.findUnique({
@@ -243,10 +245,32 @@ export class OrdersService {
         // 8. Clear cart
         await tx.cartItem.deleteMany({ where: { cartId: cart.id } });
 
-        return { order };
+        return { order, totalAmount };
       },
       { timeout: 30000 },
     );
+
+    // 9. Create Stripe PaymentIntent outside the transaction
+    const { paymentIntentId, clientSecret } =
+      await this.paymentsService.createPaymentIntent({
+        id: result.order.id,
+        orderNumber: result.order.orderNumber,
+        userId,
+        totalAmount: result.totalAmount,
+      });
+
+    // 10. Create Payment record outside the transaction
+    await this.prisma.payment.create({
+      data: {
+        orderId: result.order.id,
+        stripePaymentIntentId: paymentIntentId,
+        amount: result.totalAmount,
+        currency: 'usd',
+        status: 'PENDING',
+      },
+    });
+
+    return { order: result.order, clientSecret };
   }
 
   // ─── Order queries ─────────────────────────────────────────────────────────────

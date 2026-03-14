@@ -146,6 +146,9 @@ const mockPrisma = {
     if (typeof cb === 'function') return cb(mockTx);
     return Promise.all(cb);
   }),
+  payment: {
+    create: jest.fn(),
+  },
   order: {
     findMany: jest.fn(),
     findUnique: jest.fn(),
@@ -170,6 +173,15 @@ const mockCouponsService = {
   applyCoupon: jest.fn(),
 };
 
+const mockPaymentsService = {
+  createPaymentIntent: jest.fn().mockResolvedValue({
+    paymentIntentId: 'pi_test',
+    clientSecret: 'secret_test',
+  }),
+};
+
+import { PaymentsService } from '../payments/payments.service';
+
 function buildModule(): Promise<TestingModule> {
   return Test.createTestingModule({
     providers: [
@@ -178,6 +190,7 @@ function buildModule(): Promise<TestingModule> {
       { provide: CartService, useValue: mockCartService },
       { provide: AddressesService, useValue: mockAddressesService },
       { provide: CouponsService, useValue: mockCouponsService },
+      { provide: PaymentsService, useValue: mockPaymentsService },
     ],
   }).compile();
 }

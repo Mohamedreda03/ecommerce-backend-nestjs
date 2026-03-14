@@ -15,6 +15,7 @@ import { CartModule } from './cart/cart.module';
 import { AddressesModule } from './addresses/addresses.module';
 import { CouponsModule } from './coupons/coupons.module';
 import { OrdersModule } from './orders/orders.module';
+import { PaymentsModule } from './payments/payments.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { OrdersModule } from './orders/orders.module';
     AddressesModule,
     CouponsModule,
     OrdersModule,
+    PaymentsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
