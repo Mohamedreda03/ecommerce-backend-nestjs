@@ -882,23 +882,23 @@ src/
 
 ### Step 15.1: Wishlist module
 
-- [ ] **Task:** Create `src/wishlist/wishlist.module.ts`, `wishlist.controller.ts`, `wishlist.service.ts`.
+- [x] **Task:** Create `src/wishlist/wishlist.module.ts`, `wishlist.controller.ts`, `wishlist.service.ts`.
 
 ### Step 15.2: Wishlist service & controller
 
-- [ ] **Task:** Implement `WishlistService`:
+- [x] **Task:** Implement `WishlistService`:
   - `getWishlist(userId)` — List items with product details (name, price, image, stock status).
   - `addItem(userId, productId)` — Add to wishlist. Unique constraint handles duplicates (global filter → 409).
   - `removeItem(userId, productId)` — Remove.
   - `isInWishlist(userId, productId)` — Boolean check.
   - `moveToCart(userId, productId)` — Remove from wishlist + add to cart. Transaction.
 
-- [ ] **Task:** Implement controller (all authenticated):
+- [x] **Task:** Implement controller (all authenticated):
   - `GET /wishlist` → list
   - `POST /wishlist/:productId` → add
   - `DELETE /wishlist/:productId` → remove
   - `POST /wishlist/:productId/move-to-cart` → move to cart
-- [ ] **Test:** Unit tests for add/remove, duplicate handling, move-to-cart.
+- [x] **Test:** Unit tests for add/remove, duplicate handling, move-to-cart.
 
 ---
 
