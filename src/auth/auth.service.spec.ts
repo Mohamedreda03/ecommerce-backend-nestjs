@@ -169,7 +169,7 @@ describe('AuthService', () => {
         roles: ['CUSTOMER'],
         permissions: ['read:product'],
       });
-      
+
       const crypto = require('crypto');
       const hashedRefreshToken = crypto
         .createHash('sha256')
@@ -182,7 +182,7 @@ describe('AuthService', () => {
         isActive: true,
         refreshToken: hashedRefreshToken,
       });
-      
+
       mockPrisma.user.update.mockResolvedValue({});
 
       const result = await service.refreshTokens('valid-refresh-token');
@@ -213,7 +213,7 @@ describe('AuthService', () => {
         isActive: true,
         refreshToken: 'wrong-hash-in-db-that-will-never-match',
       });
-      
+
       await expect(service.refreshTokens('token')).rejects.toThrow(
         UnauthorizedException,
       );

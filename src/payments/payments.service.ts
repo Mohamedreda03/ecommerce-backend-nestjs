@@ -101,9 +101,7 @@ export class PaymentsService {
         break;
 
       case 'charge.refunded':
-        await this.handleChargeRefunded(
-          event.data.object as Stripe.Charge,
-        );
+        await this.handleChargeRefunded(event.data.object as Stripe.Charge);
         break;
 
       default:
@@ -199,9 +197,7 @@ export class PaymentsService {
     const payment = await this.markPaymentAsRefunded(paymentIntentId, charge);
 
     if (!payment) {
-      this.logger.warn(
-        `No payment found for refunded PI: ${paymentIntentId}`,
-      );
+      this.logger.warn(`No payment found for refunded PI: ${paymentIntentId}`);
       return;
     }
 
@@ -210,7 +206,10 @@ export class PaymentsService {
     );
   }
 
-  private async markPaymentAsRefunded(paymentIntentId: string, stripePayload: any) {
+  private async markPaymentAsRefunded(
+    paymentIntentId: string,
+    stripePayload: any,
+  ) {
     const payment = await this.prisma.payment.findUnique({
       where: { stripePaymentIntentId: paymentIntentId },
       select: { orderId: true },

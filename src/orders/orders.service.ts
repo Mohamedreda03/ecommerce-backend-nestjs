@@ -366,9 +366,12 @@ export class OrdersService {
     }
 
     const timestampUpdates: Record<string, Date> = {};
-    if (dto.status === OrderStatus.SHIPPED) timestampUpdates.shippedAt = new Date();
-    if (dto.status === OrderStatus.DELIVERED) timestampUpdates.deliveredAt = new Date();
-    if (dto.status === OrderStatus.CANCELLED) timestampUpdates.cancelledAt = new Date();
+    if (dto.status === OrderStatus.SHIPPED)
+      timestampUpdates.shippedAt = new Date();
+    if (dto.status === OrderStatus.DELIVERED)
+      timestampUpdates.deliveredAt = new Date();
+    if (dto.status === OrderStatus.CANCELLED)
+      timestampUpdates.cancelledAt = new Date();
 
     return this.prisma.order.update({
       where: { id },
@@ -424,43 +427,44 @@ export class OrdersService {
   // ─── Admin stats ───────────────────────────────────────────────────────────────
 
   async getOrderStats() {
-    const [
-      totalOrders,
-      totalRevenue,
-      ordersByStatus,
-      recentOrders,
-    ] = await Promise.all([
-      this.prisma.order.count(),
+    const [totalOrders, totalRevenue, ordersByStatus, recentOrders] =
+      await Promise.all([
+        this.prisma.order.count(),
 
-      this.prisma.order.aggregate({
-        _sum: { totalAmount: true },
-        where: {
-          status: {
-            in: [
-              OrderStatus.CONFIRMED,
-              OrderStatus.PROCESSING,
-              OrderStatus.SHIPPED,
-              OrderStatus.DELIVERED,
-            ],
+        this.prisma.order.aggregate({
+          _sum: { totalAmount: true },
+          where: {
+            status: {
+              in: [
+                OrderStatus.CONFIRMED,
+                OrderStatus.PROCESSING,
+                OrderStatus.SHIPPED,
+                OrderStatus.DELIVERED,
+              ],
+            },
           },
-        },
-      }),
+        }),
 
-      this.prisma.order.groupBy({
-        by: ['status'],
-        _count: { id: true },
-      }),
+        this.prisma.order.groupBy({
+          by: ['status'],
+          _count: { id: true },
+        }),
 
-      this.prisma.order.findMany({
-        take: 10,
-        orderBy: { createdAt: 'desc' },
-        include: {
-          user: {
-            select: { id: true, email: true, firstName: true, lastName: true },
+        this.prisma.order.findMany({
+          take: 10,
+          orderBy: { createdAt: 'desc' },
+          include: {
+            user: {
+              select: {
+                id: true,
+                email: true,
+                firstName: true,
+                lastName: true,
+              },
+            },
           },
-        },
-      }),
-    ]);
+        }),
+      ]);
 
     const statusCounts = ordersByStatus.reduce(
       (acc, item) => {
@@ -507,9 +511,7 @@ export class OrdersService {
     return `ORD-${dateStr}-${Date.now().toString().slice(-6)}`;
   }
 
-  private buildDateFilter(
-    query: OrderQueryDto,
-  ): Prisma.OrderWhereInput {
+  private buildDateFilter(query: OrderQueryDto): Prisma.OrderWhereInput {
     if (!query.dateFrom && !query.dateTo) return {};
 
     const createdAt: Prisma.DateTimeFilter = {};

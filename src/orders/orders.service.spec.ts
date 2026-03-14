@@ -126,7 +126,12 @@ function makeOrder(overrides: Partial<Record<string, unknown>> = {}) {
     ],
     payment: null,
     coupon: null,
-    user: { id: userId, email: 'john@test.com', firstName: 'John', lastName: 'Doe' },
+    user: {
+      id: userId,
+      email: 'john@test.com',
+      firstName: 'John',
+      lastName: 'Doe',
+    },
     ...overrides,
   };
 }
@@ -250,7 +255,11 @@ describe('OrdersService', () => {
     });
 
     it('throws BadRequestException when cart is empty', async () => {
-      mockTx.cart.findUnique.mockResolvedValue({ id: cartId, userId, items: [] });
+      mockTx.cart.findUnique.mockResolvedValue({
+        id: cartId,
+        userId,
+        items: [],
+      });
 
       await expect(service.checkout(userId, dto)).rejects.toThrow(
         BadRequestException,
@@ -284,7 +293,11 @@ describe('OrdersService', () => {
       (p2025Error as any).code = 'P2025';
       Object.setPrototypeOf(p2025Error, Object.getPrototypeOf(new Error()));
       // We need to create a Prisma-like error
-      const prismaError = { ...p2025Error, code: 'P2025', name: 'PrismaClientKnownRequestError' };
+      const prismaError = {
+        ...p2025Error,
+        code: 'P2025',
+        name: 'PrismaClientKnownRequestError',
+      };
       mockTx.product.update.mockRejectedValueOnce(prismaError);
 
       // The service catches errors with instanceof Prisma.PrismaClientKnownRequestError
@@ -307,7 +320,11 @@ describe('OrdersService', () => {
         couponId,
       });
 
-      const createdOrder = makeOrder({ discountAmount: '20.00', totalAmount: '80.00', couponId });
+      const createdOrder = makeOrder({
+        discountAmount: '20.00',
+        totalAmount: '80.00',
+        couponId,
+      });
       mockTx.order.create.mockResolvedValue(createdOrder);
       mockTx.cartItem.deleteMany.mockResolvedValue({});
 
@@ -317,7 +334,10 @@ describe('OrdersService', () => {
       });
 
       expect(result.order).toBeDefined();
-      expect(mockCouponsService.validateCoupon).toHaveBeenCalledWith('SUMMER20', 100);
+      expect(mockCouponsService.validateCoupon).toHaveBeenCalledWith(
+        'SUMMER20',
+        100,
+      );
       // Coupon usage increment
       expect(mockTx.coupon.update).toHaveBeenCalledWith({
         where: { id: couponId },
@@ -354,7 +374,9 @@ describe('OrdersService', () => {
 
     it('throws NotFoundException when not found', async () => {
       mockPrisma.order.findUnique.mockResolvedValue(null);
-      await expect(service.findById(orderId)).rejects.toThrow(NotFoundException);
+      await expect(service.findById(orderId)).rejects.toThrow(
+        NotFoundException,
+      );
     });
 
     it('throws ForbiddenException when userId does not match', async () => {
@@ -379,9 +401,14 @@ describe('OrdersService', () => {
     it('transitions PENDING → CONFIRMED', async () => {
       const order = makeOrder({ status: OrderStatus.PENDING });
       mockPrisma.order.findUnique.mockResolvedValue(order);
-      mockPrisma.order.update.mockResolvedValue({ ...order, status: OrderStatus.CONFIRMED });
+      mockPrisma.order.update.mockResolvedValue({
+        ...order,
+        status: OrderStatus.CONFIRMED,
+      });
 
-      const result = await service.updateStatus(orderId, { status: OrderStatus.CONFIRMED });
+      const result = await service.updateStatus(orderId, {
+        status: OrderStatus.CONFIRMED,
+      });
       expect(result.status).toBe(OrderStatus.CONFIRMED);
     });
 
@@ -397,7 +424,10 @@ describe('OrdersService', () => {
     it('sets shippedAt timestamp when transitioning to SHIPPED', async () => {
       const order = makeOrder({ status: OrderStatus.PROCESSING });
       mockPrisma.order.findUnique.mockResolvedValue(order);
-      mockPrisma.order.update.mockResolvedValue({ ...order, status: OrderStatus.SHIPPED });
+      mockPrisma.order.update.mockResolvedValue({
+        ...order,
+        status: OrderStatus.SHIPPED,
+      });
 
       await service.updateStatus(orderId, { status: OrderStatus.SHIPPED });
 
