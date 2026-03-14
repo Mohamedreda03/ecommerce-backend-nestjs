@@ -36,7 +36,7 @@ async function bootstrap() {
   });
 
   // 5. Global prefix  (CorrelationIdMiddleware is applied in AppModule)
-  app.setGlobalPrefix('api/v1');
+  app.setGlobalPrefix('api/v1', { exclude: ['health'] });
 
   // 6. Global ValidationPipe
   app.useGlobalPipes(

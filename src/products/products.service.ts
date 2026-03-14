@@ -47,6 +47,12 @@ export class ProductsService {
     private readonly redisService: RedisService,
   ) {}
 
+  private async invalidateCache() {
+    await this.redisService.deleteByPattern(
+      CACHE_INVALIDATION_PATTERNS.PRODUCTS,
+    );
+  }
+
   async findAll(query: ProductQueryDto, adminMode = false) {
     const {
       page,
@@ -72,8 +78,7 @@ export class ProductsService {
       ? sortBy
       : 'createdAt';
 
-    const where = {
-      ...(!adminMode ? { isActive: true, deletedAt: null } : {}),
+    const where: any = {
       ...(categoryId ? { categoryId } : {}),
       ...(Object.keys(priceFilter).length ? { price: priceFilter } : {}),
       ...(search
@@ -86,9 +91,15 @@ export class ProductsService {
             ],
           }
         : {}),
-      ...(isActive !== undefined ? { isActive } : {}),
       ...(isFeatured !== undefined ? { isFeatured } : {}),
     };
+
+    if (!adminMode) {
+      where.isActive = true;
+      where.deletedAt = null;
+    } else {
+      if (isActive !== undefined) where.isActive = isActive;
+    }
 
     const [products, total] = await this.prisma.$transaction([
       this.prisma.product.findMany({
@@ -160,19 +171,26 @@ export class ProductsService {
       return existing !== null;
     });
 
-    const productResult = await this.prisma.product.create({
-      data: {
-        name,
-        slug,
-        ...rest,
-        ...(categoryId !== undefined ? { categoryId } : {}),
-      } as Parameters<typeof this.prisma.product.create>[0]['data'],
-      select: PRODUCT_FULL_SELECT,
-    });
-    await this.redisService.deleteByPattern(
-      CACHE_INVALIDATION_PATTERNS.PRODUCTS,
-    );
-    return productResult;
+    try {
+      const productResult = await this.prisma.product.create({
+        data: {
+          name,
+          slug,
+          ...rest,
+          ...(categoryId !== undefined ? { categoryId } : {}),
+        } as Parameters<typeof this.prisma.product.create>[0]['data'],
+        select: PRODUCT_FULL_SELECT,
+      });
+      await this.invalidateCache();
+      return productResult;
+    } catch (error: any) {
+      if (error.code === 'P2002') {
+        throw new ConflictException(
+          'A product with this unique field already exists',
+        );
+      }
+      throw error;
+    }
   }
 
   async update(id: string, dto: UpdateProductDto) {
@@ -202,21 +220,28 @@ export class ProductsService {
       });
     }
 
-    const updateResult = await this.prisma.product.update({
-      where: { id },
-      data: {
-        ...(name ? { name } : {}),
-        ...(slug ? { slug } : {}),
-        ...(categoryId !== undefined ? { categoryId } : {}),
-        ...rest,
-      },
-      select: PRODUCT_FULL_SELECT,
-    });
+    try {
+      const updateResult = await this.prisma.product.update({
+        where: { id },
+        data: {
+          ...(name ? { name } : {}),
+          ...(slug ? { slug } : {}),
+          ...(categoryId !== undefined ? { categoryId } : {}),
+          ...rest,
+        },
+        select: PRODUCT_FULL_SELECT,
+      });
 
-    await this.redisService.deleteByPattern(
-      CACHE_INVALIDATION_PATTERNS.PRODUCTS,
-    );
-    return updateResult;
+      await this.invalidateCache();
+      return updateResult;
+    } catch (error: any) {
+      if (error.code === 'P2002') {
+        throw new ConflictException(
+          'A product with this unique field already exists',
+        );
+      }
+      throw error;
+    }
   }
 
   async updateStock(
@@ -244,15 +269,24 @@ export class ProductsService {
           ? { stock: { increment: quantity } }
           : { stock: { decrement: quantity } };
 
-    const result = await this.prisma.product.update({
-      where: { id },
-      data: stockData,
-      select: { id: true, stock: true, lowStockThreshold: true },
-    });
+    let result;
+    try {
+      result = await this.prisma.product.update({
+        where: {
+          id,
+          ...(operation === 'decrement' ? { stock: { gte: quantity } } : {}),
+        },
+        data: stockData,
+        select: { id: true, stock: true, lowStockThreshold: true },
+      });
+    } catch (error: any) {
+      if (operation === 'decrement' && error.code === 'P2025') {
+        throw new BadRequestException('Insufficient stock (concurrent update)');
+      }
+      throw error;
+    }
 
-    await this.redisService.deleteByPattern(
-      CACHE_INVALIDATION_PATTERNS.PRODUCTS,
-    );
+    await this.invalidateCache();
     return result;
   }
 
@@ -266,9 +300,7 @@ export class ProductsService {
       data: { deletedAt: new Date() },
       select: PRODUCT_FULL_SELECT,
     });
-    await this.redisService.deleteByPattern(
-      CACHE_INVALIDATION_PATTERNS.PRODUCTS,
-    );
+    await this.invalidateCache();
     return result;
   }
 
@@ -285,9 +317,7 @@ export class ProductsService {
       data: { deletedAt: null },
       select: PRODUCT_FULL_SELECT,
     });
-    await this.redisService.deleteByPattern(
-      CACHE_INVALIDATION_PATTERNS.PRODUCTS,
-    );
+    await this.invalidateCache();
     return result;
   }
 
@@ -311,9 +341,7 @@ export class ProductsService {
       select: PRODUCT_FULL_SELECT,
     });
 
-    await this.redisService.deleteByPattern(
-      CACHE_INVALIDATION_PATTERNS.PRODUCTS,
-    );
+    await this.invalidateCache();
     return result;
   }
 
@@ -325,9 +353,7 @@ export class ProductsService {
       throw new NotFoundException(`Image "${imageId}" not found`);
     }
     await this.prisma.productImage.delete({ where: { id: imageId } });
-    await this.redisService.deleteByPattern(
-      CACHE_INVALIDATION_PATTERNS.PRODUCTS,
-    );
+    await this.invalidateCache();
   }
 
   async reorderImages(productId: string, imageIds: string[]) {
@@ -347,8 +373,6 @@ export class ProductsService {
       ),
     );
 
-    await this.redisService.deleteByPattern(
-      CACHE_INVALIDATION_PATTERNS.PRODUCTS,
-    );
+    await this.invalidateCache();
   }
 }

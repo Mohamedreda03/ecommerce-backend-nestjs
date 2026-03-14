@@ -9,6 +9,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Throttle } from '@nestjs/throttler';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
 import { Permissions } from '../common/decorators/permissions.decorator';
 import { OrdersService } from './orders.service';
@@ -25,6 +26,7 @@ export class OrdersController {
   // ─── Checkout ──────────────────────────────────────────────────────────────────
 
   @Post('checkout')
+  @Throttle({ default: { limit: 3, ttl: 60000 } })
   @ApiOperation({ summary: 'Checkout — create order from cart' })
   checkout(
     @CurrentUser('id') userId: string,
