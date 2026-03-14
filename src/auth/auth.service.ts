@@ -24,14 +24,6 @@ export class AuthService {
   // ─── Public methods ──────────────────────────────────────────────────────────
 
   async register(dto: RegisterDto) {
-    const existing = await this.prisma.user.findUnique({
-      where: { email: dto.email },
-      select: { id: true },
-    });
-    if (existing) {
-      throw new ConflictException('Email is already registered');
-    }
-
     const customerRole = await this.prisma.role.findUniqueOrThrow({
       where: { name: 'CUSTOMER' },
       select: { id: true },
@@ -39,26 +31,34 @@ export class AuthService {
 
     const hashed = await hashPassword(dto.password);
 
-    const user = await this.prisma.user.create({
-      data: {
-        email: dto.email,
-        password: hashed,
-        firstName: dto.firstName,
-        lastName: dto.lastName,
-        roles: { create: { roleId: customerRole.id } },
-      },
-      select: {
-        id: true,
-        email: true,
-        firstName: true,
-        lastName: true,
-        phone: true,
-        avatar: true,
-        isActive: true,
-        createdAt: true,
-        updatedAt: true,
-      },
-    });
+    let user;
+    try {
+      user = await this.prisma.user.create({
+        data: {
+          email: dto.email,
+          password: hashed,
+          firstName: dto.firstName,
+          lastName: dto.lastName,
+          roles: { create: { roleId: customerRole.id } },
+        },
+        select: {
+          id: true,
+          email: true,
+          firstName: true,
+          lastName: true,
+          phone: true,
+          avatar: true,
+          isActive: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+      });
+    } catch (error: any) {
+      if (error.code === 'P2002' && error.meta?.target?.includes('email')) {
+        throw new ConflictException('Email is already registered');
+      }
+      throw error;
+    }
 
     const tokens = await this.generateTokens(user.id, user.email);
     await this.storeRefreshToken(user.id, tokens.refreshToken);
@@ -111,7 +111,11 @@ export class AuthService {
       throw new UnauthorizedException('Access denied');
     }
 
-    const tokenMatches = await comparePassword(refreshToken, user.refreshToken);
+    const hashedInputToken = crypto
+      .createHash('sha256')
+      .update(refreshToken)
+      .digest('hex');
+    const tokenMatches = user.refreshToken === hashedInputToken;
     if (!tokenMatches) {
       throw new UnauthorizedException('Refresh token is invalid');
     }
@@ -184,10 +188,10 @@ export class AuthService {
     userId: string,
     currentPassword: string,
     newPassword: string,
-  ): Promise<void> {
+  ) {
     const user = await this.prisma.user.findUniqueOrThrow({
       where: { id: userId },
-      select: { password: true },
+      select: { email: true, password: true },
     });
 
     const isMatch = await comparePassword(currentPassword, user.password);
@@ -196,10 +200,19 @@ export class AuthService {
     }
 
     const hashed = await hashPassword(newPassword);
+
+    const tokens = await this.generateTokens(userId, user.email);
+    const hashedRefreshToken = crypto
+      .createHash('sha256')
+      .update(tokens.refreshToken)
+      .digest('hex');
+
     await this.prisma.user.update({
       where: { id: userId },
-      data: { password: hashed, refreshToken: null },
+      data: { password: hashed, refreshToken: hashedRefreshToken },
     });
+
+    return tokens;
   }
 
   /** Used by LocalStrategy — returns user without sensitive fields, or null on failure. */
@@ -241,7 +254,10 @@ export class AuthService {
     userId: string,
     refreshToken: string,
   ): Promise<void> {
-    const hashed = await hashPassword(refreshToken);
+    const hashed = crypto
+      .createHash('sha256')
+      .update(refreshToken)
+      .digest('hex');
     await this.prisma.user.update({
       where: { id: userId },
       data: { refreshToken: hashed },

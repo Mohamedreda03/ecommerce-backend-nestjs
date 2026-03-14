@@ -86,12 +86,12 @@ export class AuthController {
     @CurrentUser('id') userId: string,
     @Body() dto: ChangePasswordDto,
   ) {
-    await this.authService.changePassword(
+    const tokens = await this.authService.changePassword(
       userId,
       dto.currentPassword,
       dto.newPassword,
     );
-    return { message: 'Password changed successfully' };
+    return { message: 'Password changed successfully', ...tokens };
   }
 
   @UseGuards(JwtAuthGuard)

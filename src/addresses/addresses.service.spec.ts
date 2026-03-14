@@ -25,7 +25,6 @@ const sampleAddress = {
   updatedAt: new Date(),
 };
 
-// Mock transaction that executes callback
 const txMock = {
   address: {
     count: jest.fn(),
@@ -68,8 +67,6 @@ describe('AddressesService', () => {
     service = module.get<AddressesService>(AddressesService);
   });
 
-  // ─── findAllByUser ───────────────────────────────────────────────────────────
-
   describe('findAllByUser', () => {
     it('returns all addresses ordered by isDefault desc then createdAt desc', async () => {
       mockPrisma.address.findMany.mockResolvedValue([sampleAddress]);
@@ -83,8 +80,6 @@ describe('AddressesService', () => {
       });
     });
   });
-
-  // ─── findById ────────────────────────────────────────────────────────────────
 
   describe('findById', () => {
     it('returns the address when found and belongs to user', async () => {
@@ -114,8 +109,6 @@ describe('AddressesService', () => {
       ).rejects.toThrow(NotFoundException);
     });
   });
-
-  // ─── create ──────────────────────────────────────────────────────────────────
 
   describe('create', () => {
     const createDto = {
@@ -156,7 +149,6 @@ describe('AddressesService', () => {
       const result = await service.create(userId, { ...createDto });
 
       expect(result.isDefault).toBe(false);
-      // updateMany should NOT be called for non-default addresses
       expect(txMock.address.updateMany).not.toHaveBeenCalled();
     });
 
@@ -176,11 +168,8 @@ describe('AddressesService', () => {
     });
   });
 
-  // ─── update ──────────────────────────────────────────────────────────────────
-
   describe('update', () => {
     it('updates address fields', async () => {
-      // First call: findById (ownership check)
       mockPrisma.address.findFirst.mockResolvedValue(sampleAddress);
       txMock.address.update.mockResolvedValue({ ...sampleAddress, city: 'Alex' });
 
@@ -221,8 +210,6 @@ describe('AddressesService', () => {
     });
   });
 
-  // ─── delete ──────────────────────────────────────────────────────────────────
-
   describe('delete', () => {
     it('deletes address and returns success message', async () => {
       mockPrisma.address.findFirst.mockResolvedValue(sampleAddress);
@@ -244,8 +231,6 @@ describe('AddressesService', () => {
       );
     });
   });
-
-  // ─── setDefault ──────────────────────────────────────────────────────────────
 
   describe('setDefault', () => {
     it('unsets previous defaults and sets new default', async () => {
