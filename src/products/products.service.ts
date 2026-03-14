@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { RedisService } from '../redis/redis.service';
+import { CACHE_INVALIDATION_PATTERNS } from '../redis/redis.constants';
 import { generateSlug } from '../common/utils/slug.util';
 import { PaginatedResponseDto } from '../common/dto/paginated-response.dto';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -159,7 +160,7 @@ export class ProductsService {
       return existing !== null;
     });
 
-    return this.prisma.product.create({
+    const productResult = await this.prisma.product.create({
       data: {
         name,
         slug,
@@ -168,6 +169,10 @@ export class ProductsService {
       } as Parameters<typeof this.prisma.product.create>[0]['data'],
       select: PRODUCT_FULL_SELECT,
     });
+    await this.redisService.deleteByPattern(
+      CACHE_INVALIDATION_PATTERNS.PRODUCTS,
+    );
+    return productResult;
   }
 
   async update(id: string, dto: UpdateProductDto) {
@@ -197,7 +202,7 @@ export class ProductsService {
       });
     }
 
-    return this.prisma.product.update({
+    const updateResult = await this.prisma.product.update({
       where: { id },
       data: {
         ...(name ? { name } : {}),
@@ -207,6 +212,11 @@ export class ProductsService {
       },
       select: PRODUCT_FULL_SELECT,
     });
+
+    await this.redisService.deleteByPattern(
+      CACHE_INVALIDATION_PATTERNS.PRODUCTS,
+    );
+    return updateResult;
   }
 
   async updateStock(
@@ -240,7 +250,9 @@ export class ProductsService {
       select: { id: true, stock: true, lowStockThreshold: true },
     });
 
-    await this.redisService.deleteByPattern('cache:/products*');
+    await this.redisService.deleteByPattern(
+      CACHE_INVALIDATION_PATTERNS.PRODUCTS,
+    );
     return result;
   }
 
@@ -249,11 +261,15 @@ export class ProductsService {
     if (!product) {
       throw new NotFoundException(`Product "${id}" not found`);
     }
-    return this.prisma.product.update({
+    const result = await this.prisma.product.update({
       where: { id },
       data: { deletedAt: new Date() },
       select: PRODUCT_FULL_SELECT,
     });
+    await this.redisService.deleteByPattern(
+      CACHE_INVALIDATION_PATTERNS.PRODUCTS,
+    );
+    return result;
   }
 
   async restore(id: string) {
@@ -264,11 +280,15 @@ export class ProductsService {
     if (!product.deletedAt) {
       throw new ConflictException(`Product "${id}" is not deleted`);
     }
-    return this.prisma.product.update({
+    const result = await this.prisma.product.update({
       where: { id },
       data: { deletedAt: null },
       select: PRODUCT_FULL_SELECT,
     });
+    await this.redisService.deleteByPattern(
+      CACHE_INVALIDATION_PATTERNS.PRODUCTS,
+    );
+    return result;
   }
 
   async addImages(
@@ -291,7 +311,9 @@ export class ProductsService {
       select: PRODUCT_FULL_SELECT,
     });
 
-    await this.redisService.deleteByPattern('cache:/products*');
+    await this.redisService.deleteByPattern(
+      CACHE_INVALIDATION_PATTERNS.PRODUCTS,
+    );
     return result;
   }
 
@@ -303,7 +325,9 @@ export class ProductsService {
       throw new NotFoundException(`Image "${imageId}" not found`);
     }
     await this.prisma.productImage.delete({ where: { id: imageId } });
-    await this.redisService.deleteByPattern('cache:/products*');
+    await this.redisService.deleteByPattern(
+      CACHE_INVALIDATION_PATTERNS.PRODUCTS,
+    );
   }
 
   async reorderImages(productId: string, imageIds: string[]) {
@@ -323,6 +347,8 @@ export class ProductsService {
       ),
     );
 
-    await this.redisService.deleteByPattern('cache:/products*');
+    await this.redisService.deleteByPattern(
+      CACHE_INVALIDATION_PATTERNS.PRODUCTS,
+    );
   }
 }

@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { RedisService } from '../redis/redis.service';
+import { CACHE_INVALIDATION_PATTERNS } from '../redis/redis.constants';
 import { generateSlug } from '../common/utils/slug.util';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
@@ -134,7 +135,9 @@ export class CategoriesService {
       select: CATEGORY_SELECT,
     });
 
-    await this.redisService.deleteByPattern('cache:/categories*');
+    await this.redisService.deleteByPattern(
+      CACHE_INVALIDATION_PATTERNS.CATEGORIES,
+    );
     return result;
   }
 
@@ -181,7 +184,9 @@ export class CategoriesService {
       select: CATEGORY_SELECT,
     });
 
-    await this.redisService.deleteByPattern('cache:/categories*');
+    await this.redisService.deleteByPattern(
+      CACHE_INVALIDATION_PATTERNS.CATEGORIES,
+    );
     return result;
   }
 
@@ -213,7 +218,9 @@ export class CategoriesService {
     });
 
     await this.prisma.category.delete({ where: { id } });
-    await this.redisService.deleteByPattern('cache:/categories*');
+    await this.redisService.deleteByPattern(
+      CACHE_INVALIDATION_PATTERNS.CATEGORIES,
+    );
   }
 
   // ─── Private helpers ────────────────────────────────────────────────────────

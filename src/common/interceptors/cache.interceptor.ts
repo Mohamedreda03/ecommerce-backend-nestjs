@@ -48,10 +48,17 @@ export class CacheInterceptor implements NestInterceptor {
       this.reflector.get<number>(CACHE_TTL_KEY, context.getHandler()) ||
       this.DEFAULT_TTL;
 
-    // Generate deterministic cache key based on path and query parameters
-    const queryStr = new URLSearchParams(
-      request.query as Record<string, string>,
-    ).toString();
+    const queryKeys = Object.keys(request.query).sort();
+    const sortedQuery = new URLSearchParams();
+    queryKeys.forEach((k) => {
+      const val = request.query[k];
+      if (Array.isArray(val)) {
+        val.forEach((v) => sortedQuery.append(k, String(v)));
+      } else {
+        sortedQuery.append(k, String(val));
+      }
+    });
+    const queryStr = sortedQuery.toString();
     const cacheKey = `cache:${request.path}${queryStr ? '?' + queryStr : ''}`;
 
     try {
@@ -61,20 +68,24 @@ export class CacheInterceptor implements NestInterceptor {
         return of(JSON.parse(cachedData));
       }
     } catch (error) {
-      this.logger.warn(`Redis get failed for key ${cacheKey}: ${(error as Error).message}`);
+      this.logger.warn(
+        `Redis get failed for key ${cacheKey}: ${(error as Error).message}`,
+      );
       // Continue execution if Redis fails
     }
 
     this.logger.debug(`Cache miss for ${cacheKey}. Proceeding to handler.`);
 
     return next.handle().pipe(
-      tap(async (response) => {
-        try {
-          // Serialize response and store in Redis with TTL
-          await this.redisService.setEx(cacheKey, JSON.stringify(response), ttl);
-        } catch (error) {
-          this.logger.warn(`Redis set failed for key ${cacheKey}: ${(error as Error).message}`);
-        }
+      tap((response) => {
+        // Run asynchronously without blocking the response
+        Promise.resolve(
+          this.redisService.setEx(cacheKey, JSON.stringify(response), ttl),
+        ).catch((error) => {
+          this.logger.warn(
+            `Redis set failed for key ${cacheKey}: ${(error as Error).message}`,
+          );
+        });
       }),
     );
   }

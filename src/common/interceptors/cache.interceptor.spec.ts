@@ -14,7 +14,7 @@ describe('CacheInterceptor', () => {
   beforeEach(() => {
     mockRedisService = {
       get: jest.fn(),
-      setEx: jest.fn(),
+      setEx: jest.fn().mockResolvedValue(undefined),
     };
 
     mockReflector = {
@@ -46,7 +46,9 @@ describe('CacheInterceptor', () => {
     } as unknown as ExecutionContext;
   };
 
-  const createMockCallHandler = (data: any = { data: 'fresh' }): CallHandler => ({
+  const createMockCallHandler = (
+    data: any = { data: 'fresh' },
+  ): CallHandler => ({
     handle: () => of(data),
   });
 
@@ -94,7 +96,7 @@ describe('CacheInterceptor', () => {
   it('should set cached data if miss with correct TTL', async () => {
     const context = createMockContext('GET', '/api/test');
     const next = createMockCallHandler({ hello: 'world' });
-    
+
     mockReflector.getAllAndOverride.mockReturnValue(true);
     mockReflector.get.mockReturnValue(120); // @CacheTTL(120)
     mockRedisService.get.mockResolvedValue(null);
