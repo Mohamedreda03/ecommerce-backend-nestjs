@@ -736,7 +736,7 @@ src/
 
 ### Step 12.1: Idempotency middleware
 
-- [ ] **Task:** Create `src/common/middleware/idempotency.middleware.ts`:
+- [x] **Task:** Create `src/common/middleware/idempotency.middleware.ts`:
   1. Applied only to `POST /orders/checkout`.
   2. Read `Idempotency-Key` header from the request. If missing, throw `400 Bad Request`.
   3. Use `RedisService.setNX(idempotency:${key}, 'processing', 300)` — 5 min TTL.
@@ -748,12 +748,12 @@ src/
 
 ### Step 12.2: Orders module
 
-- [ ] **Task:** Create `src/orders/orders.module.ts`, `orders.controller.ts`, `orders.service.ts`.
-- [ ] **Task:** Create DTOs: `create-order.dto.ts` (shippingAddressId, billingAddressId?, couponCode?, notes?, idempotencyKey), `update-order-status.dto.ts` (status — with valid transition validation), `order-query.dto.ts` (extends PaginationQueryDto: status?, dateFrom?, dateTo?).
+- [x] **Task:** Create `src/orders/orders.module.ts`, `orders.controller.ts`, `orders.service.ts`.
+- [x] **Task:** Create DTOs: `create-order.dto.ts` (shippingAddressId, billingAddressId?, couponCode?, notes?, idempotencyKey), `update-order-status.dto.ts` (status — with valid transition validation), `order-query.dto.ts` (extends PaginationQueryDto: status?, dateFrom?, dateTo?).
 
 ### Step 12.3: Orders service — The Checkout Flow
 
-- [ ] **Task:** Implement `OrdersService.checkout(userId, dto)` — **THE MOST CRITICAL METHOD**:
+- [x] **Task:** Implement `OrdersService.checkout(userId, dto)` — **THE MOST CRITICAL METHOD**:
 
   This MUST run in a Prisma interactive transaction (`prisma.$transaction(async (tx) => { ... })`) with a timeout of 30 seconds:
   1. **Validate cart:** Fetch cart with items + product details. If empty, throw `400`.
@@ -790,7 +790,7 @@ src/
 
 ### Step 12.4: Order management methods
 
-- [ ] **Task:** Implement remaining `OrdersService` methods:
+- [x] **Task:** Implement remaining `OrdersService` methods:
   - `findAllByUser(userId, query)` — Paginated orders for the authenticated user.
   - `findAll(query)` — Admin: paginated, filterable by status/date.
   - `findById(id, userId?)` — If userId provided, verify ownership for customers.
@@ -800,7 +800,7 @@ src/
 
 ### Step 12.5: Orders controller
 
-- [ ] **Task:** Implement:
+- [x] **Task:** Implement:
   - `POST /orders/checkout` — Authenticated → checkout (apply idempotency middleware)
   - `GET /orders` — Authenticated → user's orders
   - `GET /orders/admin` — `@Permissions('read:order')` → all orders
@@ -808,7 +808,7 @@ src/
   - `GET /orders/:id` — Authenticated → single order (ownership check for customers)
   - `PATCH /orders/:id/status` — `@Permissions('update:order')` → update status
   - `POST /orders/:id/cancel` — Authenticated → cancel order (user can cancel own pending/confirmed)
-- [ ] **Test:** Unit tests — this is the HIGHEST priority test suite:
+- [x] **Test:** Unit tests — this is the HIGHEST priority test suite:
   - Test successful checkout: cart → order → stock decremented → cart cleared.
   - Test insufficient stock: ensure stock is NOT decremented, order NOT created.
   - Test concurrent checkout (same cart, different idempotency keys): only first succeeds.
@@ -817,7 +817,8 @@ src/
   - Test cancellation: stock restored, payment refunded.
   - Test status transition validation.
   - Test address snapshot immutability.
-- [ ] **Test:** Integration test — full checkout flow end-to-end.
+- [x] **Test:** Integration test — full checkout flow end-to-end.
+
 
 ---
 

@@ -14,6 +14,7 @@ import { FilesModule } from './files/files.module';
 import { CartModule } from './cart/cart.module';
 import { AddressesModule } from './addresses/addresses.module';
 import { CouponsModule } from './coupons/coupons.module';
+import { OrdersModule } from './orders/orders.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { CouponsModule } from './coupons/coupons.module';
     CartModule,
     AddressesModule,
     CouponsModule,
+    OrdersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
