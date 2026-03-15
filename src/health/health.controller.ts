@@ -11,6 +11,8 @@ import { PrismaService } from '../prisma/prisma.service';
 import { RedisService } from '../redis/redis.service';
 import { Public } from '../common/decorators/public.decorator';
 
+import * as path from 'path';
+
 @ApiTags('health')
 @Controller('health')
 export class HealthController {
@@ -31,7 +33,7 @@ export class HealthController {
     return this.health.check([
       // Database health
       () => this.prismaIndicator.pingCheck('database', this.prismaService),
-      
+
       // Redis health
       async () => {
         try {
@@ -44,15 +46,15 @@ export class HealthController {
 
       // Memory health: heap usage should be less than 150MB
       () => this.memory.checkHeap('memory_heap', 150 * 1024 * 1024),
-      
+
       // Memory health: RSS should be less than 300MB
       () => this.memory.checkRSS('memory_rss', 300 * 1024 * 1024),
 
       // Disk health: check if we have at least 5% or 50MB free space in the uploads directory
       () =>
         this.disk.checkStorage('disk', {
-          path: './uploads',
-          thresholdPercent: 0.05,
+          path: path.resolve('uploads'),
+          thresholdPercent: 0.95, // 95% used means 5% free
         }),
     ]);
   }

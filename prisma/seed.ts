@@ -305,16 +305,16 @@ async function main() {
 
   console.log('  ✓ Permissions assigned to all roles');
 
-  // 6. Create default super admin user
-  console.log('Creating default admin user...');
-  const hashedPassword = await bcrypt.hash('Admin@123', 12);
+  console.log('Creating default admin & standard users...');
+  const defaultPassword = await bcrypt.hash('Password@123', 12);
 
+  // 6a. Super Admin
   const adminUser = await prisma.user.upsert({
-    where: { email: 'admin@ecommerce.com' },
+    where: { email: 'superadmin@ecommerce.com' },
     update: {},
     create: {
-      email: 'admin@ecommerce.com',
-      password: hashedPassword,
+      email: 'superadmin@ecommerce.com',
+      password: defaultPassword,
       firstName: 'Super',
       lastName: 'Admin',
       isActive: true,
@@ -329,7 +329,59 @@ async function main() {
     create: { userId: adminUser.id, roleId: superAdminRole.id },
   });
 
-  console.log('  ✓ Admin user: admin@ecommerce.com (password: Admin@123)');
+  console.log(
+    '  ✓ Super Admin user: superadmin@ecommerce.com (password: Password@123)',
+  );
+
+  // 6b. Standard Admin
+  const standardAdminUser = await prisma.user.upsert({
+    where: { email: 'admin@ecommerce.com' },
+    update: {},
+    create: {
+      email: 'admin@ecommerce.com',
+      password: defaultPassword,
+      firstName: 'Store',
+      lastName: 'Admin',
+      isActive: true,
+    },
+  });
+
+  await prisma.userRole.upsert({
+    where: {
+      userId_roleId: { userId: standardAdminUser.id, roleId: adminRole.id },
+    },
+    update: {},
+    create: { userId: standardAdminUser.id, roleId: adminRole.id },
+  });
+
+  console.log(
+    '  ✓ Store Admin user: admin@ecommerce.com (password: Password@123)',
+  );
+
+  // 6c. Standard Customer
+  const normalCustomer = await prisma.user.upsert({
+    where: { email: 'customer@ecommerce.com' },
+    update: {},
+    create: {
+      email: 'customer@ecommerce.com',
+      password: defaultPassword,
+      firstName: 'John',
+      lastName: 'Doe',
+      isActive: true,
+    },
+  });
+
+  await prisma.userRole.upsert({
+    where: {
+      userId_roleId: { userId: normalCustomer.id, roleId: customerRole.id },
+    },
+    update: {},
+    create: { userId: normalCustomer.id, roleId: customerRole.id },
+  });
+
+  console.log(
+    '  ✓ Customer user: customer@ecommerce.com (password: Password@123)',
+  );
 
   // 7. Create sample categories
   console.log('Creating sample categories...');

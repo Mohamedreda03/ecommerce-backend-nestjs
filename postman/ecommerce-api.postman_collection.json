@@ -1,0 +1,5106 @@
+{
+  "info": {
+    "name": "Ecommerce Backend API (Auto Generated)",
+    "_postman_id": "8f8a1607-4f6d-4da5-bbde-ec9e6478e400",
+    "description": "Auto-generated from NestJS controllers under src/**/*.controller.ts. Includes route descriptions and test-ready sample payloads.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000"
+    },
+    {
+      "key": "accessToken",
+      "value": ""
+    },
+    {
+      "key": "refreshToken",
+      "value": ""
+    },
+    {
+      "key": "id",
+      "value": "550e8400-e29b-41d4-a716-446655440000"
+    },
+    {
+      "key": "userId",
+      "value": "550e8400-e29b-41d4-a716-446655440001"
+    },
+    {
+      "key": "roleId",
+      "value": "550e8400-e29b-41d4-a716-446655440002"
+    },
+    {
+      "key": "permissionId",
+      "value": "550e8400-e29b-41d4-a716-446655440003"
+    },
+    {
+      "key": "secondPermissionId",
+      "value": "550e8400-e29b-41d4-a716-446655440004"
+    },
+    {
+      "key": "productId",
+      "value": "550e8400-e29b-41d4-a716-446655440005"
+    },
+    {
+      "key": "categoryId",
+      "value": "550e8400-e29b-41d4-a716-446655440006"
+    },
+    {
+      "key": "parentCategoryId",
+      "value": "550e8400-e29b-41d4-a716-446655440007"
+    },
+    {
+      "key": "orderId",
+      "value": "550e8400-e29b-41d4-a716-446655440008"
+    },
+    {
+      "key": "couponId",
+      "value": "550e8400-e29b-41d4-a716-446655440009"
+    },
+    {
+      "key": "addressId",
+      "value": "550e8400-e29b-41d4-a716-446655440010"
+    },
+    {
+      "key": "billingAddressId",
+      "value": "550e8400-e29b-41d4-a716-446655440011"
+    },
+    {
+      "key": "reviewId",
+      "value": "550e8400-e29b-41d4-a716-446655440012"
+    },
+    {
+      "key": "imageId",
+      "value": "550e8400-e29b-41d4-a716-446655440013"
+    },
+    {
+      "key": "secondImageId",
+      "value": "550e8400-e29b-41d4-a716-446655440014"
+    },
+    {
+      "key": "cartItemId",
+      "value": "550e8400-e29b-41d4-a716-446655440015"
+    },
+    {
+      "key": "productSlug",
+      "value": "iphone-15-pro"
+    },
+    {
+      "key": "categorySlug",
+      "value": "electronics"
+    },
+    {
+      "key": "slug",
+      "value": "sample-slug"
+    },
+    {
+      "key": "couponCode",
+      "value": "SUMMER20"
+    },
+    {
+      "key": "uploadedFilePath",
+      "value": "uploads/products/example-image.jpg"
+    },
+    {
+      "key": "stripeSignature",
+      "value": "t=1700000000,v1=test_signature"
+    },
+    {
+      "key": "orderIdempotencySuffix",
+      "value": "20260315-1001"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{accessToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('Response time < 5000ms', function () {",
+          "  pm.expect(pm.response.responseTime).to.be.below(5000);",
+          "});"
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "name": "Addresses",
+      "item": [
+        {
+          "name": "GET /addresses",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "description": "List all addresses for the current user",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/addresses",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "addresses"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST /addresses",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "description": "Create a new address",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/addresses",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "addresses"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"SHIPPING\",\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"street\": \"123 Main Street\",\n  \"city\": \"Cairo\",\n  \"state\": \"Cairo Governorate\",\n  \"country\": \"Egypt\",\n  \"zipCode\": \"11511\",\n  \"phone\": \"+201001112233\",\n  \"isDefault\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 201', function () {",
+                  "  pm.response.to.have.status(201);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "DELETE /addresses/:id",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "description": "Delete an address",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/addresses/{{addressId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "addresses",
+                "{{addressId}}"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{addressId}}"
+                }
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /addresses/:id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "description": "Get a specific address by ID",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/addresses/{{addressId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "addresses",
+                "{{addressId}}"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{addressId}}"
+                }
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "PATCH /addresses/:id",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "description": "Update an existing address",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/addresses/{{addressId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "addresses",
+                "{{addressId}}"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{addressId}}"
+                }
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"city\": \"Giza\",\n  \"state\": \"Giza Governorate\",\n  \"zipCode\": \"12611\",\n  \"isDefault\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "PATCH /addresses/:id/default",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "description": "Set an address as the default for its type",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/addresses/{{addressId}}/default",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "addresses",
+                "{{addressId}}",
+                "default"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{addressId}}"
+                }
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"SHIPPING\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "App.controller.ts",
+      "item": [
+        {
+          "name": "GET /",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "description": "GET /",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1"
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "POST /auth/change-password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "description": "Change password while authenticated",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/change-password",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "change-password"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currentPassword\": \"StrongPass@123\",\n  \"newPassword\": \"StrongPass@456\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST /auth/forgot-password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "description": "Request a password reset email",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/forgot-password",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "forgot-password"
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"customer@example.com\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST /auth/login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "description": "Log in with email and password",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "login"
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"customer@example.com\",\n  \"password\": \"StrongPass@123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "let json = {};",
+                  "try { json = pm.response.json(); } catch (e) { json = {}; }",
+                  "const payload = json.data || json;",
+                  "if (payload.accessToken) pm.collectionVariables.set('accessToken', payload.accessToken);",
+                  "if (payload.refreshToken) pm.collectionVariables.set('refreshToken', payload.refreshToken);",
+                  "if (payload.user && payload.user.id) pm.collectionVariables.set('userId', payload.user.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST /auth/logout",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "description": "Invalidate the current refresh token",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/logout",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "logout"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /auth/me",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "description": "Get current authenticated user profile",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "me"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST /auth/refresh",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "description": "Rotate access + refresh token pair",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/refresh",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "refresh"
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "let json = {};",
+                  "try { json = pm.response.json(); } catch (e) { json = {}; }",
+                  "const payload = json.data || json;",
+                  "if (payload.accessToken) pm.collectionVariables.set('accessToken', payload.accessToken);",
+                  "if (payload.refreshToken) pm.collectionVariables.set('refreshToken', payload.refreshToken);",
+                  "if (payload.user && payload.user.id) pm.collectionVariables.set('userId', payload.user.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST /auth/register",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "description": "Register a new customer account",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "register"
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"customer@example.com\",\n  \"password\": \"StrongPass@123\",\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 201', function () {",
+                  "  pm.response.to.have.status(201);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST /auth/reset-password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "description": "Reset password using a reset token",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/reset-password",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "reset-password"
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"token\": \"reset-token-from-email\",\n  \"newPassword\": \"NewStrongPass@123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Cart",
+      "item": [
+        {
+          "name": "DELETE /cart",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "description": "Clear all cart items",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/cart",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "cart"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /cart",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "description": "Get current user cart",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/cart",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "cart"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST /cart/items",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "description": "Add item to cart",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/cart/items",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "cart",
+                "items"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"productId\": \"{{productId}}\",\n  \"quantity\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 201', function () {",
+                  "  pm.response.to.have.status(201);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "DELETE /cart/items/:id",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "description": "Remove item from cart",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/cart/items/{{cartItemId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "cart",
+                "items",
+                "{{cartItemId}}"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{cartItemId}}"
+                }
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "PATCH /cart/items/:id",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "description": "Update cart item quantity",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/cart/items/{{cartItemId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "cart",
+                "items",
+                "{{cartItemId}}"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{cartItemId}}"
+                }
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quantity\": 2\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /cart/validate",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "description": "Validate cart before checkout",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/cart/validate",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "cart",
+                "validate"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Categories",
+      "item": [
+        {
+          "name": "GET /categories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "description": "List active categories (storefront)",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/categories",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "categories"
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST /categories",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "description": "Create a category (admin)",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/categories",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "categories"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Electronics\",\n  \"description\": \"Electronic devices and accessories\",\n  \"parentId\": \"{{parentCategoryId}}\",\n  \"image\": \"https://cdn.example.com/categories/electronics.jpg\",\n  \"sortOrder\": 0,\n  \"isActive\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 201', function () {",
+                  "  pm.response.to.have.status(201);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "DELETE /categories/:id",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "description": "Delete a category (admin)",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/categories/{{categoryId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "categories",
+                "{{categoryId}}"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{categoryId}}"
+                }
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 204', function () {",
+                  "  pm.response.to.have.status(204);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "PATCH /categories/:id",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "description": "Update a category (admin)",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/categories/{{categoryId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "categories",
+                "{{categoryId}}"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{categoryId}}"
+                }
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Electronics\",\n  \"description\": \"Updated category description\",\n  \"isActive\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /categories/:slug",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "description": "Get a category by slug (storefront)",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/categories/{{categorySlug}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "categories",
+                "{{categorySlug}}"
+              ],
+              "variable": [
+                {
+                  "key": "slug",
+                  "value": "{{categorySlug}}"
+                }
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /categories/admin",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "description": "List all categories including inactive (admin)",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/categories/admin",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "categories",
+                "admin"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /categories/tree",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "description": "Get category tree (storefront)",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/categories/tree",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "categories",
+                "tree"
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Coupons",
+      "item": [
+        {
+          "name": "GET /coupons",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "description": "[Admin] Paginated coupon list",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/coupons",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "coupons"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Example page"
+                },
+                {
+                  "key": "limit",
+                  "value": "20",
+                  "description": "Example limit"
+                },
+                {
+                  "key": "sortBy",
+                  "value": "createdAt",
+                  "description": "Example sortBy"
+                },
+                {
+                  "key": "sortOrder",
+                  "value": "desc",
+                  "description": "Example sortOrder"
+                }
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST /coupons",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "description": "[Admin] Create a coupon",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/coupons",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "coupons"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"SUMMER20\",\n  \"description\": \"20% off summer campaign\",\n  \"discountType\": \"PERCENTAGE\",\n  \"discountValue\": \"20.00\",\n  \"minOrderAmount\": \"50.00\",\n  \"maxDiscountAmount\": \"100.00\",\n  \"maxUses\": 100,\n  \"isActive\": true,\n  \"startsAt\": \"2026-06-01T00:00:00.000Z\",\n  \"expiresAt\": \"2026-08-31T23:59:59.000Z\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 201', function () {",
+                  "  pm.response.to.have.status(201);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "DELETE /coupons/:id",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "description": "[Admin] Delete a coupon (only if unused)",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/coupons/{{couponId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "coupons",
+                "{{couponId}}"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{couponId}}"
+                }
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /coupons/:id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "description": "[Admin] Get coupon by ID",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/coupons/{{couponId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "coupons",
+                "{{couponId}}"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{couponId}}"
+                }
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "PATCH /coupons/:id",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "description": "[Admin] Update a coupon",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/coupons/{{couponId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "coupons",
+                "{{couponId}}"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{couponId}}"
+                }
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"Updated coupon description\",\n  \"maxUses\": 200,\n  \"isActive\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST /coupons/validate",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "description": "Validate a coupon code against an order subtotal",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/coupons/validate",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "coupons",
+                "validate"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"{{couponCode}}\",\n  \"orderSubtotal\": \"150.00\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 201', function () {",
+                  "  pm.response.to.have.status(201);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Files",
+      "item": [
+        {
+          "name": "DELETE /files",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "description": "DELETE /files",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/files",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "files"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"filePath\": \"{{uploadedFilePath}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 204', function () {",
+                  "  pm.response.to.have.status(204);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST /files/upload-multiple",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "description": "POST /files/upload-multiple",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/files/upload-multiple",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "files",
+                "upload-multiple"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "files",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "files",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 201', function () {",
+                  "  pm.response.to.have.status(201);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST /files/upload",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "description": "POST /files/upload",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/files/upload",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "files",
+                "upload"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 201', function () {",
+                  "  pm.response.to.have.status(201);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "GET /health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "description": "Check application health status",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/health",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "health"
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Orders",
+      "item": [
+        {
+          "name": "GET /orders",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "description": "Get current user's orders",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/orders",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "orders"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Example page"
+                },
+                {
+                  "key": "limit",
+                  "value": "20",
+                  "description": "Example limit"
+                },
+                {
+                  "key": "status",
+                  "value": "PENDING",
+                  "description": "Example status"
+                },
+                {
+                  "key": "dateFrom",
+                  "value": "2026-01-01T00:00:00.000Z",
+                  "description": "Example dateFrom"
+                },
+                {
+                  "key": "dateTo",
+                  "value": "2026-12-31T23:59:59.000Z",
+                  "description": "Example dateTo"
+                },
+                {
+                  "key": "sortBy",
+                  "value": "createdAt",
+                  "description": "Example sortBy"
+                },
+                {
+                  "key": "sortOrder",
+                  "value": "desc",
+                  "description": "Example sortOrder"
+                }
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /orders/:id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "description": "Get order by ID (ownership check for customers)",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/orders/{{orderId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "orders",
+                "{{orderId}}"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{orderId}}"
+                }
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST /orders/:id/cancel",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "description": "Cancel order (user — only PENDING/CONFIRMED)",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/orders/{{orderId}}/cancel",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "orders",
+                "{{orderId}}",
+                "cancel"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{orderId}}"
+                }
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 201', function () {",
+                  "  pm.response.to.have.status(201);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "PATCH /orders/:id/status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "description": "[Admin] Update order status",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/orders/{{orderId}}/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "orders",
+                "{{orderId}}",
+                "status"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{orderId}}"
+                }
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"SHIPPED\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /orders/admin",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "description": "[Admin] Get all orders",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/orders/admin",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "orders",
+                "admin"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Example page"
+                },
+                {
+                  "key": "limit",
+                  "value": "20",
+                  "description": "Example limit"
+                },
+                {
+                  "key": "status",
+                  "value": "PENDING",
+                  "description": "Example status"
+                },
+                {
+                  "key": "dateFrom",
+                  "value": "2026-01-01T00:00:00.000Z",
+                  "description": "Example dateFrom"
+                },
+                {
+                  "key": "dateTo",
+                  "value": "2026-12-31T23:59:59.000Z",
+                  "description": "Example dateTo"
+                },
+                {
+                  "key": "sortBy",
+                  "value": "createdAt",
+                  "description": "Example sortBy"
+                },
+                {
+                  "key": "sortOrder",
+                  "value": "desc",
+                  "description": "Example sortOrder"
+                }
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /orders/admin/stats",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "description": "[Admin] Get order statistics",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/orders/admin/stats",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "orders",
+                "admin",
+                "stats"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST /orders/checkout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "description": "Checkout — create order from cart",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/orders/checkout",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "orders",
+                "checkout"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"shippingAddressId\": \"{{addressId}}\",\n  \"billingAddressId\": \"{{billingAddressId}}\",\n  \"couponCode\": \"{{couponCode}}\",\n  \"notes\": \"Please call before delivery\",\n  \"idempotencyKey\": \"order-{{orderIdempotencySuffix}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 201', function () {",
+                  "  pm.response.to.have.status(201);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Payments",
+      "item": [
+        {
+          "name": "POST /payments/webhook",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "stripe-signature",
+                "value": "{{stripeSignature}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "description": "POST /payments/webhook",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/payments/webhook",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "payments",
+                "webhook"
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\"id\":\"evt_test_webhook\",\"type\":\"payment_intent.succeeded\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 201', function () {",
+                  "  pm.response.to.have.status(201);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Products",
+      "item": [
+        {
+          "name": "GET /products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "description": "GET /products",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/products",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "products"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Example page"
+                },
+                {
+                  "key": "limit",
+                  "value": "20",
+                  "description": "Example limit"
+                },
+                {
+                  "key": "categoryId",
+                  "value": "{{categoryId}}",
+                  "description": "Example categoryId"
+                },
+                {
+                  "key": "minPrice",
+                  "value": "10",
+                  "description": "Example minPrice"
+                },
+                {
+                  "key": "maxPrice",
+                  "value": "5000",
+                  "description": "Example maxPrice"
+                },
+                {
+                  "key": "search",
+                  "value": "iphone",
+                  "description": "Example search"
+                },
+                {
+                  "key": "isActive",
+                  "value": "true",
+                  "description": "Example isActive"
+                },
+                {
+                  "key": "isFeatured",
+                  "value": "false",
+                  "description": "Example isFeatured"
+                },
+                {
+                  "key": "sortBy",
+                  "value": "createdAt",
+                  "description": "Example sortBy"
+                },
+                {
+                  "key": "sortOrder",
+                  "value": "desc",
+                  "description": "Example sortOrder"
+                }
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST /products",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "description": "POST /products",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/products",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "products"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"iPhone 15 Pro\",\n  \"description\": \"Latest Apple smartphone\",\n  \"shortDescription\": \"Premium smartphone\",\n  \"price\": 999.99,\n  \"compareAtPrice\": 1199.99,\n  \"costPrice\": 750,\n  \"sku\": \"IPHONE-15-PRO-256\",\n  \"stock\": 50,\n  \"lowStockThreshold\": 5,\n  \"weight\": 0.174,\n  \"isActive\": true,\n  \"isFeatured\": false,\n  \"categoryId\": \"{{categoryId}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 201', function () {",
+                  "  pm.response.to.have.status(201);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "DELETE /products/:id",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "description": "DELETE /products/:id",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/products/{{productId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "products",
+                "{{productId}}"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{productId}}"
+                }
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 204', function () {",
+                  "  pm.response.to.have.status(204);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "PATCH /products/:id",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "description": "PATCH /products/:id",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/products/{{productId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "products",
+                "{{productId}}"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{productId}}"
+                }
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"iPhone 15 Pro Max\",\n  \"price\": 1099.99,\n  \"stock\": 35,\n  \"isFeatured\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST /products/:id/images",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "description": "POST /products/:id/images",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/products/{{productId}}/images",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "products",
+                "{{productId}}",
+                "images"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{productId}}"
+                }
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"images\": [\n    {\n      \"url\": \"https://cdn.example.com/products/p1-front.jpg\",\n      \"alt\": \"Front view\",\n      \"sortOrder\": 0\n    },\n    {\n      \"url\": \"https://cdn.example.com/products/p1-back.jpg\",\n      \"alt\": \"Back view\",\n      \"sortOrder\": 1\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 201', function () {",
+                  "  pm.response.to.have.status(201);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "PATCH /products/:id/images/reorder",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "description": "PATCH /products/:id/images/reorder",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/products/{{productId}}/images/reorder",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "products",
+                "{{productId}}",
+                "images",
+                "reorder"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{productId}}"
+                }
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"imageIds\": [\n    \"{{imageId}}\",\n    \"{{secondImageId}}\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "PATCH /products/:id/restore",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "description": "PATCH /products/:id/restore",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/products/{{productId}}/restore",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "products",
+                "{{productId}}",
+                "restore"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{productId}}"
+                }
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "PATCH /products/:id/stock",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "description": "PATCH /products/:id/stock",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/products/{{productId}}/stock",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "products",
+                "{{productId}}",
+                "stock"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{productId}}"
+                }
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quantity\": 5,\n  \"operation\": \"increment\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /products/:slug",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "description": "GET /products/:slug",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/products/{{productSlug}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "products",
+                "{{productSlug}}"
+              ],
+              "variable": [
+                {
+                  "key": "slug",
+                  "value": "{{productSlug}}"
+                }
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /products/admin/:id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "description": "GET /products/admin/:id",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/products/admin/{{productId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "products",
+                "admin",
+                "{{productId}}"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{productId}}"
+                }
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /products/admin/all",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "description": "GET /products/admin/all",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/products/admin/all",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "products",
+                "admin",
+                "all"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Example page"
+                },
+                {
+                  "key": "limit",
+                  "value": "20",
+                  "description": "Example limit"
+                },
+                {
+                  "key": "categoryId",
+                  "value": "{{categoryId}}",
+                  "description": "Example categoryId"
+                },
+                {
+                  "key": "minPrice",
+                  "value": "10",
+                  "description": "Example minPrice"
+                },
+                {
+                  "key": "maxPrice",
+                  "value": "5000",
+                  "description": "Example maxPrice"
+                },
+                {
+                  "key": "search",
+                  "value": "iphone",
+                  "description": "Example search"
+                },
+                {
+                  "key": "isActive",
+                  "value": "true",
+                  "description": "Example isActive"
+                },
+                {
+                  "key": "isFeatured",
+                  "value": "false",
+                  "description": "Example isFeatured"
+                },
+                {
+                  "key": "sortBy",
+                  "value": "createdAt",
+                  "description": "Example sortBy"
+                },
+                {
+                  "key": "sortOrder",
+                  "value": "desc",
+                  "description": "Example sortOrder"
+                }
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "DELETE /products/images/:imageId",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "description": "DELETE /products/images/:imageId",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/products/images/{{imageId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "products",
+                "images",
+                "{{imageId}}"
+              ],
+              "variable": [
+                {
+                  "key": "imageId",
+                  "value": "{{imageId}}"
+                }
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 204', function () {",
+                  "  pm.response.to.have.status(204);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Reviews",
+      "item": [
+        {
+          "name": "GET /products/:productId/reviews",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "description": "Get approved reviews for a product",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/products/{{productId}}/reviews",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "products",
+                "{{productId}}",
+                "reviews"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Example page"
+                },
+                {
+                  "key": "limit",
+                  "value": "20",
+                  "description": "Example limit"
+                },
+                {
+                  "key": "rating",
+                  "value": "5",
+                  "description": "Example rating"
+                },
+                {
+                  "key": "sortBy",
+                  "value": "createdAt",
+                  "description": "Example sortBy"
+                },
+                {
+                  "key": "sortOrder",
+                  "value": "desc",
+                  "description": "Example sortOrder"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "productId",
+                  "value": "{{productId}}"
+                }
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST /products/:productId/reviews",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "description": "Create a review for a product",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/products/{{productId}}/reviews",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "products",
+                "{{productId}}",
+                "reviews"
+              ],
+              "variable": [
+                {
+                  "key": "productId",
+                  "value": "{{productId}}"
+                }
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rating\": 5,\n  \"title\": \"Excellent Product\",\n  \"comment\": \"Works exactly as expected.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 201', function () {",
+                  "  pm.response.to.have.status(201);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /products/:productId/reviews/stats",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "description": "Get rating statistics for a product",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/products/{{productId}}/reviews/stats",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "products",
+                "{{productId}}",
+                "reviews",
+                "stats"
+              ],
+              "variable": [
+                {
+                  "key": "productId",
+                  "value": "{{productId}}"
+                }
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "DELETE /reviews/:id",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "description": "Delete your own review",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/reviews/{{reviewId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "reviews",
+                "{{reviewId}}"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{reviewId}}"
+                }
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "PATCH /reviews/:id",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "description": "Update your own review",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/reviews/{{reviewId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "reviews",
+                "{{reviewId}}"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{reviewId}}"
+                }
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rating\": 4,\n  \"title\": \"Updated Review\",\n  \"comment\": \"Still good after 2 weeks of use.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "PATCH /reviews/:id/approve",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "description": "Admin: Approve a review",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/reviews/{{reviewId}}/approve",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "reviews",
+                "{{reviewId}}",
+                "approve"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{reviewId}}"
+                }
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "PATCH /reviews/:id/reject",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "description": "Admin: Reject a review",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/reviews/{{reviewId}}/reject",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "reviews",
+                "{{reviewId}}",
+                "reject"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{reviewId}}"
+                }
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "DELETE /reviews/admin/:id",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "description": "Admin: Delete any review",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/reviews/admin/{{reviewId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "reviews",
+                "admin",
+                "{{reviewId}}"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{reviewId}}"
+                }
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /reviews/me",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "description": "Get my reviews",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/reviews/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "reviews",
+                "me"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Example page"
+                },
+                {
+                  "key": "limit",
+                  "value": "20",
+                  "description": "Example limit"
+                },
+                {
+                  "key": "rating",
+                  "value": "5",
+                  "description": "Example rating"
+                },
+                {
+                  "key": "sortBy",
+                  "value": "createdAt",
+                  "description": "Example sortBy"
+                },
+                {
+                  "key": "sortOrder",
+                  "value": "desc",
+                  "description": "Example sortOrder"
+                }
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /reviews/pending",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "description": "Admin: Get pending reviews",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/reviews/pending",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "reviews",
+                "pending"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Example page"
+                },
+                {
+                  "key": "limit",
+                  "value": "20",
+                  "description": "Example limit"
+                },
+                {
+                  "key": "rating",
+                  "value": "5",
+                  "description": "Example rating"
+                },
+                {
+                  "key": "sortBy",
+                  "value": "createdAt",
+                  "description": "Example sortBy"
+                },
+                {
+                  "key": "sortOrder",
+                  "value": "desc",
+                  "description": "Example sortOrder"
+                }
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Roles",
+      "item": [
+        {
+          "name": "GET /permissions",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "description": "List all available permissions",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/permissions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "permissions"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /roles",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "description": "List all roles with their permissions",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/roles",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "roles"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST /roles",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "description": "Create a new role",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/roles",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "roles"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"EDITOR\",\n  \"description\": \"Can edit products and categories\",\n  \"permissionIds\": [\n    \"{{permissionId}}\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 201', function () {",
+                  "  pm.response.to.have.status(201);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "DELETE /roles/:id",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "description": "Delete a custom role",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/roles/{{roleId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "roles",
+                "{{roleId}}"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{roleId}}"
+                }
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 204', function () {",
+                  "  pm.response.to.have.status(204);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /roles/:id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "description": "Get a role by id",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/roles/{{roleId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "roles",
+                "{{roleId}}"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{roleId}}"
+                }
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "PATCH /roles/:id",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "description": "Update a role",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/roles/{{roleId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "roles",
+                "{{roleId}}"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{roleId}}"
+                }
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"SENIOR_EDITOR\",\n  \"description\": \"Can edit plus approve content\",\n  \"permissionIds\": [\n    \"{{permissionId}}\",\n    \"{{secondPermissionId}}\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST /roles/assign",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "description": "Assign a role to a user",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/roles/assign",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "roles",
+                "assign"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"{{userId}}\",\n  \"roleId\": \"{{roleId}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 201', function () {",
+                  "  pm.response.to.have.status(201);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST /roles/revoke",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "description": "Remove a role from a user",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/roles/revoke",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "roles",
+                "revoke"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"{{userId}}\",\n  \"roleId\": \"{{roleId}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 204', function () {",
+                  "  pm.response.to.have.status(204);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "GET /users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "description": "List all users (admin)",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Example page"
+                },
+                {
+                  "key": "limit",
+                  "value": "20",
+                  "description": "Example limit"
+                },
+                {
+                  "key": "sortBy",
+                  "value": "createdAt",
+                  "description": "Example sortBy"
+                },
+                {
+                  "key": "sortOrder",
+                  "value": "desc",
+                  "description": "Example sortOrder"
+                }
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST /users",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "description": "Create a user (admin)",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"staff@example.com\",\n  \"password\": \"StrongPass@123\",\n  \"firstName\": \"Staff\",\n  \"lastName\": \"User\",\n  \"phone\": \"+201001112233\",\n  \"roleId\": \"{{roleId}}\",\n  \"isActive\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 201', function () {",
+                  "  pm.response.to.have.status(201);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "DELETE /users/:id",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "description": "Soft-delete a user (admin)",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/{{userId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "{{userId}}"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{userId}}"
+                }
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 204', function () {",
+                  "  pm.response.to.have.status(204);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /users/:id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "description": "Get a user by id (admin)",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/{{userId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "{{userId}}"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{userId}}"
+                }
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "PATCH /users/:id",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "description": "Update a user (admin)",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/{{userId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "{{userId}}"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{userId}}"
+                }
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Updated\",\n  \"lastName\": \"User\",\n  \"phone\": \"+201009998877\",\n  \"isActive\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "PATCH /users/:id/restore",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "description": "Restore a soft-deleted user (admin)",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/{{userId}}/restore",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "{{userId}}",
+                "restore"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{userId}}"
+                }
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /users/profile",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "description": "Get own profile",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/profile",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "profile"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "PATCH /users/profile",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "description": "Update own profile",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/profile",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "profile"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Profile\",\n  \"lastName\": \"Owner\",\n  \"phone\": \"+201234567890\",\n  \"avatar\": \"https://cdn.example.com/avatars/u1.png\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Wishlist",
+      "item": [
+        {
+          "name": "GET /wishlist",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "description": "List user wishlist items",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/wishlist",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "wishlist"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "DELETE /wishlist/:productId",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "description": "Remove product from wishlist",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/wishlist/{{productId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "wishlist",
+                "{{productId}}"
+              ],
+              "variable": [
+                {
+                  "key": "productId",
+                  "value": "{{productId}}"
+                }
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 204', function () {",
+                  "  pm.response.to.have.status(204);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST /wishlist/:productId",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "description": "Add product to wishlist",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/wishlist/{{productId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "wishlist",
+                "{{productId}}"
+              ],
+              "variable": [
+                {
+                  "key": "productId",
+                  "value": "{{productId}}"
+                }
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 201', function () {",
+                  "  pm.response.to.have.status(201);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /wishlist/:productId/check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "description": "Check if product is in wishlist",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/wishlist/{{productId}}/check",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "wishlist",
+                "{{productId}}",
+                "check"
+              ],
+              "variable": [
+                {
+                  "key": "productId",
+                  "value": "{{productId}}"
+                }
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST /wishlist/:productId/move-to-cart",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "description": "Move product from wishlist to cart",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/wishlist/{{productId}}/move-to-cart",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "wishlist",
+                "{{productId}}",
+                "move-to-cart"
+              ],
+              "variable": [
+                {
+                  "key": "productId",
+                  "value": "{{productId}}"
+                }
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 201', function () {",
+                  "  pm.response.to.have.status(201);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

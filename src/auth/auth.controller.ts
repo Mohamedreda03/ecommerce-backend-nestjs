@@ -6,12 +6,15 @@ import {
   HttpStatus,
   Post,
   UseGuards,
+  Req,
+  Res,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
+import type { Response, Request } from 'express';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
-import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
@@ -26,11 +29,25 @@ import type { AuthenticatedUser } from './interfaces/jwt-payload.interface';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  private setRefreshTokenCookie(res: Response, refreshToken: string) {
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+  }
+
   @Public()
   @Post('register')
   @ApiOperation({ summary: 'Register a new customer account' })
-  async register(@Body() dto: RegisterDto) {
-    return this.authService.register(dto);
+  async register(
+    @Body() dto: RegisterDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const { refreshToken, ...result } = await this.authService.register(dto);
+    this.setRefreshTokenCookie(res, refreshToken);
+    return result;
   }
 
   @Public()
@@ -39,16 +56,31 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Throttle({ default: { limit: 5, ttl: 60000 } })
   @ApiOperation({ summary: 'Log in with email and password' })
-  async login(@CurrentUser() user: AuthenticatedUser) {
-    return this.authService.login(user);
+  async login(
+    @CurrentUser() user: AuthenticatedUser,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const { refreshToken, ...result } = await this.authService.login(user);
+    this.setRefreshTokenCookie(res, refreshToken);
+    return result;
   }
 
   @Public()
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Rotate access + refresh token pair' })
-  async refresh(@Body() dto: RefreshTokenDto) {
-    return this.authService.refreshTokens(dto.refreshToken);
+  async refresh(
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const currentRefreshToken = req.cookies?.refreshToken;
+    if (!currentRefreshToken) {
+      throw new UnauthorizedException('Refresh token not found in cookies');
+    }
+    const { refreshToken, ...result } =
+      await this.authService.refreshTokens(currentRefreshToken);
+    this.setRefreshTokenCookie(res, refreshToken);
+    return result;
   }
 
   @UseGuards(JwtAuthGuard)
@@ -56,8 +88,12 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Invalidate the current refresh token' })
-  async logout(@CurrentUser('id') userId: string) {
+  async logout(
+    @CurrentUser('id') userId: string,
+    @Res({ passthrough: true }) res: Response,
+  ) {
     await this.authService.logout(userId);
+    res.clearCookie('refreshToken');
     return { message: 'Logged out successfully' };
   }
 
@@ -88,13 +124,15 @@ export class AuthController {
   async changePassword(
     @CurrentUser('id') userId: string,
     @Body() dto: ChangePasswordDto,
+    @Res({ passthrough: true }) res: Response,
   ) {
-    const tokens = await this.authService.changePassword(
+    const { refreshToken, ...result } = await this.authService.changePassword(
       userId,
       dto.currentPassword,
       dto.newPassword,
     );
-    return { message: 'Password changed successfully', ...tokens };
+    this.setRefreshTokenCookie(res, refreshToken);
+    return { message: 'Password changed successfully', ...result };
   }
 
   @UseGuards(JwtAuthGuard)
