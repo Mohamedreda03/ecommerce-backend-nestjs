@@ -40,7 +40,8 @@ export const envValidationSchema = Joi.object({
   MAX_FILE_SIZE_MB: Joi.number().integer().positive().default(5),
 
   // Frontend
-  FRONTEND_URL: Joi.string().uri().required(),
+
+  FRONTEND_URL: Joi.string().required(),
 
   // Shipping
   FREE_SHIPPING_THRESHOLD: Joi.number().positive().default(100),

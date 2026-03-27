@@ -30,8 +30,15 @@ async function bootstrap() {
   app.use(cookieParser());
 
   // 4. CORS
+  // FRONTEND_URL may be a single origin or a comma-separated list of origins
+  const frontendUrlRaw = config.get<string>('FRONTEND_URL', '');
+  const frontendOrigins = frontendUrlRaw
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean);
+
   app.enableCors({
-    origin: config.getOrThrow<string>('FRONTEND_URL'),
+    origin: frontendOrigins.length > 0 ? frontendOrigins : undefined,
     credentials: true,
   });
 

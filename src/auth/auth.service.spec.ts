@@ -307,53 +307,123 @@ describe('AuthService', () => {
     });
   });
 
-  // ─── validateUser ────────────────────────────────────────────────────────────
+  // ─── validateAdminUser / validateUser ───────────────────────────────────────
 
-  describe('validateUser', () => {
-    it('returns user without password on valid credentials', async () => {
-      const mockUser = {
-        id: 'user-id',
-        email: 'user@example.com',
-        password: 'hashed',
-        isActive: true,
-        deletedAt: null,
-      };
+  describe('validateAdminUser', () => {
+    const mockUser = {
+      id: 'admin-id',
+      email: 'admin@example.com',
+      password: 'hashed-password',
+      isActive: true,
+      deletedAt: null,
+      roles: [
+        {
+          role: { name: 'ADMIN' },
+        },
+      ],
+    };
+
+    it('returns user without password when user is ADMIN', async () => {
       mockPrisma.user.findUnique.mockResolvedValue(mockUser);
       jest.spyOn(hashUtil, 'comparePassword').mockResolvedValue(true);
 
-      const result = await service.validateUser('user@example.com', 'Pass@1');
+      const result = await service.validateAdminUser(
+        'admin@example.com',
+        'Pass@123',
+      );
 
+      expect(result).not.toBeNull();
       expect(result).not.toHaveProperty('password');
-      expect(result?.id).toBe('user-id');
+      expect(result?.id).toBe('admin-id');
     });
 
-    it('returns null when password does not match', async () => {
+    it('returns user without password when user is SUPER_ADMIN', async () => {
       mockPrisma.user.findUnique.mockResolvedValue({
-        id: 'user-id',
-        email: 'user@example.com',
-        password: 'hashed',
-        isActive: true,
+        ...mockUser,
+        roles: [{ role: { name: 'SUPER_ADMIN' } }],
       });
-      jest.spyOn(hashUtil, 'comparePassword').mockResolvedValue(false);
+      jest.spyOn(hashUtil, 'comparePassword').mockResolvedValue(true);
 
-      const result = await service.validateUser('user@example.com', 'wrong');
+      const result = await service.validateAdminUser('admin@example.com', 'any');
+      expect(result?.id).toBe('admin-id');
+    });
+
+    it('returns null when user has CUSTOMER role only', async () => {
+      mockPrisma.user.findUnique.mockResolvedValue({
+        ...mockUser,
+        roles: [{ role: { name: 'CUSTOMER' } }],
+      });
+      jest.spyOn(hashUtil, 'comparePassword').mockResolvedValue(true);
+
+      const result = await service.validateAdminUser('user@example.com', 'any');
       expect(result).toBeNull();
     });
 
-    it('returns null when user does not exist', async () => {
-      mockPrisma.user.findUnique.mockResolvedValue(null);
-      const result = await service.validateUser('ghost@example.com', 'pass');
+    it('returns null when password does not match', async () => {
+      mockPrisma.user.findUnique.mockResolvedValue(mockUser);
+      jest.spyOn(hashUtil, 'comparePassword').mockResolvedValue(false);
+
+      const result = await service.validateAdminUser('admin@example.com', 'wrong');
       expect(result).toBeNull();
     });
 
     it('returns null when user is inactive', async () => {
       mockPrisma.user.findUnique.mockResolvedValue({
-        id: 'user-id',
+        ...mockUser,
         isActive: false,
-        password: 'hashed',
       });
-      const result = await service.validateUser('user@example.com', 'pass');
+      const result = await service.validateAdminUser('admin@example.com', 'any');
       expect(result).toBeNull();
+    });
+  });
+
+  describe('validateDashboardUser', () => {
+    it('returns user when user has manage:all permission', async () => {
+      const mockAdmin = { id: 'admin-id', permissions: ['manage:all'] };
+      jest.spyOn(service, 'validateAdminUser').mockResolvedValue(mockAdmin as any);
+
+      const result = await service.validateDashboardUser('admin@e.com', 'pass');
+
+      expect(result).toEqual(mockAdmin);
+    });
+
+    it('returns user when user has read:analytics permission', async () => {
+      const mockAdmin = { id: 'admin-id', permissions: ['read:analytics'] };
+      jest.spyOn(service, 'validateAdminUser').mockResolvedValue(mockAdmin as any);
+
+      const result = await service.validateDashboardUser('admin@e.com', 'pass');
+
+      expect(result).toEqual(mockAdmin);
+    });
+
+    it('returns null when user has neither manage:all nor read:analytics', async () => {
+      const mockAdmin = { id: 'admin-id', permissions: ['read:product'] };
+      jest.spyOn(service, 'validateAdminUser').mockResolvedValue(mockAdmin as any);
+
+      const result = await service.validateDashboardUser('admin@e.com', 'pass');
+
+      expect(result).toBeNull();
+    });
+
+    it('returns null when validateAdminUser fails', async () => {
+      jest.spyOn(service, 'validateAdminUser').mockResolvedValue(null);
+      const result = await service.validateDashboardUser('admin@e.com', 'pass');
+      expect(result).toBeNull();
+    });
+  });
+
+  describe('validateUser', () => {
+    it('calls validateAdminUser and returns its result (restricting to privileged users)', async () => {
+      const mockAdmin = { id: 'admin-id', email: 'admin@e.com' };
+      jest.spyOn(service, 'validateAdminUser').mockResolvedValue(mockAdmin as any);
+
+      const result = await service.validateUser('admin@e.com', 'password');
+
+      expect(service.validateAdminUser).toHaveBeenCalledWith(
+        'admin@e.com',
+        'password',
+      );
+      expect(result).toEqual(mockAdmin);
     });
   });
 });

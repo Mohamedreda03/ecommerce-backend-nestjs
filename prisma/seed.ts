@@ -17,6 +17,7 @@ const SUBJECTS = [
   'coupon',
   'analytics',
   'role',
+  'dashboard',
 ] as const;
 
 const ACTIONS = ['create', 'read', 'update', 'delete'] as const;
@@ -63,12 +64,19 @@ function buildPermissions(): PermissionDef[] {
     description: 'Can manage own addresses',
   });
 
+  perms.push({
+    action: 'access',
+    subject: 'dashboard',
+    description: 'Can access backend dashboard',
+  });
+
   return perms;
 }
 
 // ─── Role permission maps ──────────────────────────────────────────────────────
 
 const ADMIN_PERMISSION_PAIRS: [string, string][] = [
+  ['access', 'dashboard'],
   // Products
   ['create', 'product'],
   ['read', 'product'],

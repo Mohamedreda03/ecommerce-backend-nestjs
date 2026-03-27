@@ -215,19 +215,72 @@ export class AuthService {
     return tokens;
   }
 
-  /** Used by LocalStrategy — returns user without sensitive fields, or null on failure. */
-  async validateUser(email: string, password: string) {
+  /**
+   * Validates a user for administrative access.
+   * Returns user without sensitive fields, or null on failure/insufficient privileges.
+   */
+  async validateAdminUser(email: string, password: string) {
     const user = await this.prisma.user.findUnique({
       where: { email, deletedAt: null },
+      include: {
+        roles: {
+          include: {
+            role: {
+              include: {
+                permissions: { include: { permission: true } },
+              },
+            },
+          },
+        },
+      },
     });
+
     if (!user || !user.isActive) return null;
 
     const isMatch = await comparePassword(password, user.password);
     if (!isMatch) return null;
 
+    // Fetch full roles and permissions for the validation response
+    const { roles, permissions } = await this.fetchRolesAndPermissions(user.id);
+
+    // General admin check: must have either ADMIN or SUPER_ADMIN role
+    const hasPrivileges = roles.some((role) =>
+      ['ADMIN', 'SUPER_ADMIN'].includes(role),
+    );
+
+    if (!hasPrivileges) {
+      return null;
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { password: _pwd, ...result } = user;
-    return result;
+    const { password: _pwd, roles: _roles, ...result } = user;
+    return { ...result, roles, permissions };
+  }
+
+  /**
+   * Validates a user specifically for Dashboard access.
+   * Requires 'manage:all' or 'read:analytics' permission.
+   */
+  async validateDashboardUser(email: string, password: string) {
+    const user = await this.validateAdminUser(email, password);
+    if (!user) return null;
+
+    // Specifically check for dashboard-level permissions
+    const canAccessDashboard =
+      user.permissions.includes('manage:all') ||
+      user.permissions.includes('read:analytics');
+
+    if (!canAccessDashboard) {
+      return null;
+    }
+
+    return user;
+  }
+
+  /** Used by LocalStrategy — returns user without sensitive fields, or null on failure. */
+  async validateUser(email: string, password: string) {
+    // Standard login for privileged users
+    return this.validateAdminUser(email, password);
   }
 
   // ─── Private helpers ─────────────────────────────────────────────────────────

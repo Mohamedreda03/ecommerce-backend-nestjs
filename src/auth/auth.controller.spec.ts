@@ -10,6 +10,7 @@ import request from 'supertest';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
+import { LocalAuthGuard } from '../common/guards/local-auth.guard';
 import { PermissionsGuard } from '../common/guards/permissions.guard';
 
 // ─── Mock AuthService ─────────────────────────────────────────────────────────
@@ -34,6 +35,8 @@ const mockTokens = {
 const mockAuthService = {
   register: jest.fn(),
   login: jest.fn(),
+  validateUser: jest.fn(),
+  validateDashboardUser: jest.fn(),
   refreshTokens: jest.fn(),
   logout: jest.fn(),
   forgotPassword: jest.fn(),
@@ -62,6 +65,15 @@ function buildApp(): Promise<INestApplication> {
         return true;
       },
     })
+    .overrideGuard(LocalAuthGuard)
+    .useValue({
+      canActivate: (ctx: import('@nestjs/common').ExecutionContext) => {
+        const req = ctx.switchToHttp().getRequest();
+        // LocalAuthGuard usually populates req.user after successful validation
+        req.user = { id: 'user-id', email: 'user@example.com' };
+        return true;
+      },
+    })
     .overrideGuard(PermissionsGuard)
     .useValue({ canActivate: () => true })
     .compile()
@@ -87,6 +99,53 @@ describe('AuthController (integration)', () => {
 
   afterEach(async () => {
     await app.close();
+  });
+
+  // ─── POST /auth/register ───────────────────────────────────────────────────
+
+  describe('POST /auth/login', () => {
+    it('returns 200 with user and tokens on successful login', async () => {
+      mockAuthService.login.mockResolvedValue({
+        user: mockUser,
+        ...mockTokens,
+      });
+
+      const res = await request(app.getHttpServer())
+        .post('/auth/login')
+        .send({ email: 'user@example.com', password: 'password' });
+
+      expect(res.status).toBe(HttpStatus.OK);
+      expect(res.body).toHaveProperty('accessToken');
+      expect(res.body.user.id).toBe(mockUser.id);
+    });
+  });
+
+  describe('POST /auth/dashboard/login', () => {
+    it('returns 200 with user and tokens on successful dashboard login', async () => {
+      mockAuthService.validateDashboardUser.mockResolvedValue(mockUser);
+      mockAuthService.login.mockResolvedValue({
+        user: mockUser,
+        ...mockTokens,
+      });
+
+      const res = await request(app.getHttpServer())
+        .post('/auth/dashboard/login')
+        .send({ email: 'admin@example.com', password: 'password' });
+
+      expect(res.status).toBe(HttpStatus.OK);
+      expect(res.body).toHaveProperty('accessToken');
+    });
+
+    it('returns 401 when user has insufficient dashboard permissions', async () => {
+      mockAuthService.validateDashboardUser.mockResolvedValue(null);
+
+      const res = await request(app.getHttpServer())
+        .post('/auth/dashboard/login')
+        .send({ email: 'user@example.com', password: 'password' });
+
+      expect(res.status).toBe(HttpStatus.UNAUTHORIZED);
+      expect(res.body.message).toMatch(/insufficient dashboard permissions/i);
+    });
   });
 
   // ─── POST /auth/register ───────────────────────────────────────────────────

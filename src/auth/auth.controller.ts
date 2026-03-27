@@ -19,9 +19,11 @@ import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { Public } from '../common/decorators/public.decorator';
+import { Permissions } from '../common/decorators/permissions.decorator';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
 import { LocalAuthGuard } from '../common/guards/local-auth.guard';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
+
 import type { AuthenticatedUser } from './interfaces/jwt-payload.interface';
 
 @ApiTags('auth')
@@ -55,11 +57,44 @@ export class AuthController {
   @Post('login')
   @HttpCode(HttpStatus.OK)
   @Throttle({ default: { limit: 5, ttl: 60000 } })
-  @ApiOperation({ summary: 'Log in with email and password' })
+  @ApiOperation({
+    summary: 'Log in with email and password (Restricted to privileged users)',
+  })
   async login(
     @CurrentUser() user: AuthenticatedUser,
     @Res({ passthrough: true }) res: Response,
   ) {
+    const { refreshToken, ...result } = await this.authService.login(user);
+    this.setRefreshTokenCookie(res, refreshToken);
+    return result;
+  }
+
+  @Public()
+  @UseGuards(LocalAuthGuard)
+  @Post('dashboard/login')
+  @HttpCode(HttpStatus.OK)
+  @Throttle({ default: { limit: 5, ttl: 60000 } })
+  @ApiOperation({ summary: 'Log in to the control panel (Dashboard access)' })
+  async dashboardLogin(
+    @CurrentUser() user: AuthenticatedUser,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    if (
+      !user.permissions?.includes('access:dashboard') &&
+      !user.permissions?.includes('manage:all')
+    ) {
+      throw new UnauthorizedException(
+        'Access denied. Dashboard permission required.',
+      );
+    }
+    if (
+      !user.permissions?.includes('access:dashboard') &&
+      !user.permissions?.includes('manage:all')
+    ) {
+      throw new UnauthorizedException(
+        'Access denied. Dashboard permission required.',
+      );
+    }
     const { refreshToken, ...result } = await this.authService.login(user);
     this.setRefreshTokenCookie(res, refreshToken);
     return result;
